@@ -119,7 +119,7 @@ def viewDirectorMovies():
         query = "SELECT m.movie_id, m.movie_name, ms.theatre_id, t.district, ms.time_slot FROM Movies m JOIN Directors d ON m.username = d.username JOIN MovieSessions ms ON ms.movie_id = m.movie_id JOIN Theatres t ON ms.theatre_id = t.theatre_id WHERE d.username = %s"
         cursor.execute(query, (director_username,))
         movies = cursor.fetchall()
-        
+        print(movies)
         if not movies:
             message = "This director does not have a movie yet"
             return render_template('databaseManager/viewDirectorMovies.html', message=message)
