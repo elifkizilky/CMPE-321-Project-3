@@ -6,6 +6,51 @@
 <body>
     <h1>Database Manager Page</h1>
     <p>Welcome to the Database Manager Page!</p>
+    <h1>Add User</h1>
+    <p>Click this button to add a new user!</p>
+    <a href="{{ url_for('databaseManager.addUser') }}"><button>Add User</button></a>
+    <h1>View All Directors</h1>
+    <p>Click this button to view all the directors!</p>
+    <a href="{{ url_for('databaseManager.viewDirectors') }}"><button>View Directors</button></a>
+
+    <h1>View Movies of Director</h1>
+    <p>Click this button to view all the the movies of a director!</p>
+    <a href="{{ url_for('databaseManager.viewDirectorMovies') }}"><button>View Movies of Director</button></a>
+
+    <h1>Delete Audience</h1>
+    <form action="{{ url_for('databaseManager.deleteAudience') }}" method="POST">
+        <label for="delete_username">Username:</label>
+        <input type="text" id="delete_username" name="username" required><br>
+
+        <button type="submit">Delete Audience</button>
+    </form>
+
+    {% if success_message %}
+        <p>{{ success_message }}</p>
+    {% endif %}
+
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
+
     <!-- Add more content as needed -->
+    <h1>Update Director Platform ID</h1>
+    <form action="{{ url_for('databaseManager.updateDirectorPlatform') }}" method="POST">
+        <label for="update_username">Director Username:</label>
+        <input type="text" id="update_username" name="username" required><br>
+
+        <label for="update_platform_id">Platform ID:</label>
+        <input type="text" id="update_platform_id" name="platform_id" required><br>
+
+        <button type="submit">Update Platform ID</button>
+    </form>
+
+    {% if success_message2 %}
+      <p>{{ success_message2 }}</p>
+    {% endif %}
+
+    {% if error_message2 %}
+        <p>{{ error_message2 }}</p>
+    {% endif %}
 </body>
 </html>
