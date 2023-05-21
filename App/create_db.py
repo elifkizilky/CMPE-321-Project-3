@@ -1,6 +1,8 @@
 import sys
 sys.path.append("..")
 import mysql.connector
+import sys
+sys.path.append("..")
 from config import Config
 
 

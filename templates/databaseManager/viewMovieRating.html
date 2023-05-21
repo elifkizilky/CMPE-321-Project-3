@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Movie Rating</title>
+</head>
+<body>
+    <h1>View Movie Rating</h1>
+    <form action="{{ url_for('databaseManager.viewMovieRating') }}" method="POST">
+        <label for="movie_id">Movie ID:</label>
+        <input type="text" id="movie_id" name="movie_id" required>
+        <button type="submit">View Rating</button>
+    </form>
+
+    {% if movie_id %}
+        <h3>Movie ID: {{ movie_id }}</h3>
+        <h3>Movie Name: {{ movie_name }}</h3>
+        <h3>Overall Rating: {{ overall_rating }}</h3>
+    {% endif %}
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+</body>
+</html>
