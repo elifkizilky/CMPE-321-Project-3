@@ -21,10 +21,23 @@ def login():
         if result:
             # Login successful, redirect to the dashboard or appropriate page
             # Example: return redirect('/dashboard')
-            return "Login successful"
+            return "Database Manager Login successful"
         else:
             # Login failed, display an error message or redirect to login page
             # Example: return render_template('login.html', error="Invalid credentials")
+            cursor.execute("SELECT * FROM Users u JOIN Directors d ON d.username = u.username WHERE d.username = %s AND u.password = %s", (username, password))
+            result2 = cursor.fetchone()
+            
+            if result2:
+                return "director login successfull"
+            else:
+                cursor.execute("SELECT * FROM Users WHERE username = %s AND password = %s", (username, password))
+                result3 = cursor.fetchone()
+                if result3:
+                    return "Audience login successfull"
+                else:
+                    return "Invalid credentials"
+                
             return "Invalid credentials"
 
     return render_template('login.html')
