@@ -119,7 +119,7 @@ def viewDirectorMovies():
         query = "SELECT m.movie_id, m.movie_name, ms.theatre_id, t.district, ms.time_slot FROM Movies m JOIN Directors d ON m.username = d.username JOIN MovieSessions ms ON ms.movie_id = m.movie_id JOIN Theatres t ON ms.theatre_id = t.theatre_id WHERE d.username = %s"
         cursor.execute(query, (director_username,))
         movies = cursor.fetchall()
-        print(movies)
+        #print(movies)
         if not movies:
             message = "This director does not have a movie yet"
             return render_template('databaseManager/viewDirectorMovies.html', message=message)
@@ -127,3 +127,21 @@ def viewDirectorMovies():
         return render_template('databaseManager/viewDirectorMovies.html', movies=movies)
 
     return render_template('databaseManager/viewDirectorMovies.html')
+
+
+@databaseManager_bp.route('/viewAudienceRatings', methods=['GET', 'POST'])
+def viewAudienceRatings():
+    if request.method == 'POST':
+        username = request.form['username']
+        cursor = connection.cursor()
+
+        # Retrieve ratings of the specified audience
+        query = "SELECT r.movie_id, m.movie_name, r.rating FROM Rates r JOIN Movies m ON m.movie_id = r.movie_id WHERE r.username = %s"
+        cursor.execute(query, (username,))
+        ratings = cursor.fetchall()
+        if not ratings:
+            message = "This Audience does not have rating"
+            return render_template('databaseManager/viewAudienceRatings.html', message=message)
+        return render_template('databaseManager/viewAudienceRatings.html', ratings=ratings)
+
+    return render_template('databaseManager/viewAudienceRatings.html')

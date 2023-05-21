@@ -13,14 +13,14 @@ VALUES (80001, 'Animation'),
 
 INSERT INTO RatingPlatforms (platform_id, platform_name)
 VALUES (10130, 'IMDB'),
-		(10131, 'Letterboxd'),
+	(10131, 'Letterboxd'),
         (10132, 'FilmIzle'),
         (10133, 'Filmora'),
         (10134, 'BollywoodMDB');
 
 INSERT INTO Users (username, name, password, surname)
 VALUES ('demonslayer', 'tanjiro', '1234', 'kamado'),
-	    ('kingOfForest', 'Inosuke', '123478', 'Hashibira'),
+	('kingOfForest', 'Inosuke', '123478', 'Hashibira'),
         ('blonde', 'zenitsu', '123478', 'Agatsuma'),
         ('boss', 'muzan', '1234567', 'Kibutsuji'),
         ('michanek', 'Michael', '098765', 'Haneke'),
@@ -31,7 +31,7 @@ INSERT INTO Directors (username, nationality, platform_id)
 VALUES ('kamisama', 'Japan', 10130),
         ('michanek', 'German', 10131),
         ('chrisnolan', 'English', 10131),
-		('boss', 'Japan', 10131);
+	('boss', 'Japan', 10131);
 
 
 INSERT INTO Movies (movie_id, movie_name, average_rating, username, duration)
@@ -60,3 +60,25 @@ VALUES (1, 1, '2023-05-22', 1, 1),
        (5, 1, '2023-05-25', 4, 1),
        (6, 2, '2023-05-26', 5, 2),
        (7, 3, '2023-05-27', 6, 1);
+
+
+INSERT INTO AudienceBuy (username, session_id)
+VALUES  ('kingOfForest', 1),
+        ('kingOfForest', 2),
+        ('kingOfForest', 4),
+        ('kingOfForest', 5),
+        ('kingOfForest', 6),
+        ('blonde', 2);
+
+INSERT INTO AudienceSubscribe (username, platform_id)
+VALUES  ('kingOfForest', 10131),
+        ('blonde', 10131);
+
+
+
+INSERT INTO Rates (username, movie_id, rating)
+VALUES ('kingOfForest', 1, 3.8),
+       ('kingOfForest', 2, 3.8),
+       ('kingOfForest', 3, 4.8),
+       ('kingOfForest', 4, 2.7),
+       ('kingOfForest', 5, 3.5);
