@@ -1,9 +1,12 @@
 from flask import Flask
 import mysql.connector
 import os
+from config import Config
+
 
 
 app = Flask(__name__)
+
 
 # mydb= mysql.connector.connect(
 #     host="127.0.0.1",
@@ -25,12 +28,13 @@ app = Flask(__name__)
 
 
 def execute_sql_file(file_path):
+    
     try:
         connection = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="****",
-            database="sys"
+            host=Config.HOST,
+            user=Config.USER,
+            password=Config.PASSWORD,
+            database=Config.DATABASE
         )
         cursor = connection.cursor()
 
@@ -52,10 +56,10 @@ def execute_sql_file(file_path):
 def execute_sql_line(line):
     try:
         connection = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="Hoplamaz1",
-            database="sys"
+            host=Config.HOST,
+            user=Config.USER,
+            password=Config.PASSWORD,
+            database=Config.DATABASE
         )
         cursor = connection.cursor()
         cursor.execute(line)
