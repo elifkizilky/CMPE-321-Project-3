@@ -1,12 +1,14 @@
-import sys
-sys.path.append("../App")
+#import sys
+#sys.path.append("../App")
 from ..App.db_config import connection
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Blueprint
 
-app = Flask(__name__)
+#app = Flask(__name__)
+login_bp = Blueprint('login', __name__)
 
-@app.route('/login', methods=['GET', 'POST'])
+#@login_bp.route('/login', methods=['GET', 'POST'])
+@login_bp.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -21,7 +23,7 @@ def login():
         if result:
             # Login successful, redirect to the dashboard or appropriate page
             # Example: return redirect('/dashboard')
-            return "Database Manager Login successful"
+            return redirect('/databaseManager')
         else:
             # Login failed, display an error message or redirect to login page
             # Example: return render_template('login.html', error="Invalid credentials")
@@ -29,15 +31,15 @@ def login():
             result2 = cursor.fetchone()
             
             if result2:
-                return "director login successfull"
+                return redirect('/director')
             else:
                 cursor.execute("SELECT * FROM Users WHERE username = %s AND password = %s", (username, password))
                 result3 = cursor.fetchone()
                 if result3:
-                    return "Audience login successfull"
+                    return redirect('/audience')
                 else:
                     return "Invalid credentials"
                 
             return "Invalid credentials"
 
-    return render_template('login.html')
+    return render_template('login/login.html')
