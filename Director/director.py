@@ -35,20 +35,27 @@ session_id=1
 @director_bp.route('/add_movie_session', methods=['POST'])
 def add_movie_session():
     # Retrieve the form data
+    cursor = connection.cursor()
     global session_id
+    cursor.execute("""SELECT *
+                    FROM Directors""")
+    print(cursor.fetchall())
+    
     movie_id = request.form.get('movie_id')
     movie_name = request.form.get('movie_name')
     theatre_id = request.form.get('theatre_id')
     time_slot = request.form.get('time_slot')
     date = request.form.get('date')
+    duration = request.form.get('duration')
+
     username = session.get('username')
     print(username)
-    cursor = connection.cursor()
+    
     cursor.execute("""INSERT IGNORE INTO Movies
     (movie_id, movie_name, average_rating, username, duration)
     VALUES (%s, %s, %s, %s, %s)
-    """, (movie_id, movie_name, 5, username, 2))
-    cursor.execute("""INSERT IGNORE INTO MovieSessions 
+    """, (movie_id, movie_name, 0, username, duration))
+    cursor.execute("""INSERT INTO MovieSessions 
     (session_id, time_slot, session_date, movie_id, theatre_id)
     VALUES (%s, %s, %s, %s, %s)
     """, (session_id, time_slot, date, movie_id, theatre_id))
@@ -56,5 +63,8 @@ def add_movie_session():
     # Provide a success message to the director
     message = "Movie session successfully added."
     session_id+=1
+    cursor.execute("""SELECT *
+                    FROM Movies""")
+    print(cursor.fetchall())
     
     return render_template('director/director.html', message=message)

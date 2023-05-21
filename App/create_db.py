@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import mysql.connector
 from config import Config
 
@@ -129,9 +131,21 @@ def execute_triggers():
                     SET MESSAGE_TEXT = 'User is not eligible to rate this movie.';
             END IF;
         END;"""
-
-
     cursor.execute(rating_insert_trigger)
+    average_rating_trigger="""CREATE TRIGGER update_average_rating
+        AFTER INSERT ON Rates
+        FOR EACH ROW
+        BEGIN
+            UPDATE Movies
+            SET average_rating = (
+                SELECT AVG(rating)
+                FROM Rates
+                WHERE movie_id = NEW.movie_id
+            )
+            WHERE movie_id = NEW.movie_id;
+        END;""" 
+    cursor.execute(average_rating_trigger)
+    
     return "Triggers are executed"
  
 
