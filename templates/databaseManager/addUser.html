@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add User</title>
+</head>
+<body>
+    <h1>Add User</h1>
+    <form action="/databaseManager/addUser" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" name="surname" required><br>
+
+        <label for="user_type">User Type:</label>
+        <select id="user_type" name="user_type" required>
+            <option value="director">Director</option>
+            <option value="audience">Audience</option>
+        </select><br>
+
+        <div id="director_fields" style="display: none;">
+            <label for="nationality">Nationality:</label>
+            <input type="text" id="nationality" name="nationality"><br>
+
+            <label for="platform_id">Platform ID:</label>
+            <input type="text" id="platform_id" name="platform_id"><br>
+        </div>
+
+        <button type="submit">Add User</button>
+    </form>
+
+    <script>
+        // Show or hide director fields based on the selected user type
+        const userTypeSelect = document.getElementById('user_type');
+        const directorFields = document.getElementById('director_fields');
+
+        userTypeSelect.addEventListener('change', function() {
+            if (userTypeSelect.value === 'director') {
+                directorFields.style.display = 'block';
+            } else {
+                directorFields.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

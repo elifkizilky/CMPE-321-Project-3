@@ -225,13 +225,13 @@ BEGIN
     SELECT COUNT(*) INTO subscribed
     FROM AudienceSubscribe
     WHERE username = NEW.username
-    AND platform_id = (SELECT platform_id FROM Directors JOIN Movies ON Movies.username= Directors.username WHERE Movies.movie_id  = NEW.movie_id);
+    AND platform_id = (SELECT platform_id FROM Directors JOIN Movies ON Movies.username= Directors.username WHERE Movies.movie_id  = NEW.movie_id LIMIT 1);
     
     -- Check if the user has bought a ticket to the movie
     SELECT COUNT(*) INTO bought_ticket
     FROM AudienceBuy
     WHERE username = NEW.username
-    AND session_id = (SELECT session_id FROM MovieSessions WHERE movie_id = NEW.movie_id);
+    AND session_id = (SELECT session_id FROM MovieSessions WHERE movie_id = NEW.movie_id LIMIT 1);
     -- If the user is not subscribed or hasn't bought a ticket, raise an error
     IF subscribed = 0 OR bought_ticket = 0
     THEN

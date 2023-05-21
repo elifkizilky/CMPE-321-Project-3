@@ -8,6 +8,8 @@ source env/bin/activate : Activate the virtual environment:
 
 python3 -m venv env : Create a virtual environment: 
 
-export FLASK_APP=Login/app.py
-
+for mac/linux
+export FLASK_APP=/app.py
+for windows:
+set FLASK_APP=/app.py
 flask run

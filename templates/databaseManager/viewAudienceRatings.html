@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Audience Ratings</title>
+</head>
+<body>
+    <h1>View Audience Ratings</h1>
+    <form action="{{ url_for('databaseManager.viewAudienceRatings') }}" method="POST">
+        <label for="audience_username">Audience Username:</label>
+        <input type="text" id="audience_username" name="username" required>
+        <button type="submit">View Ratings</button>
+    </form>
+
+    {% if ratings %}
+        <h2>Ratings of Audience: {{ username }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Movie ID</th>
+                    <th>Movie Name</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings %}
+                <tr>
+                    <td>{{ rating[0] }}</td>
+                    <td>{{ rating[1] }}</td>
+                    <td>{{ rating[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ message }}</p>
+    {% endif %}
+</body>
+</html>
