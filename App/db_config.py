@@ -1,5 +1,5 @@
 import mysql.connector
-from config import Config
+from .config import Config
 connection = mysql.connector.connect(
     host=Config.HOST,
     user=Config.USER,

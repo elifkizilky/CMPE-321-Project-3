@@ -17,3 +17,14 @@ VALUES (10130, 'IMDB'),
         (10132, 'FilmIzle'),
         (10133, 'Filmora'),
         (10134, 'BollywoodMDB');
+
+INSERT INTO Users (username, name, password, surname)
+VALUES ('demonslayer', 'tanjiro', '1234', 'kamado'),
+	    ('kingOfForest', 'Inosuke', '123478', 'Hashibira'),
+        ('blonde', 'zenitsu', '123478', 'Agatsuma'),
+        ('boss', 'muzan', '1234567', 'Kibutsuji'),
+        ('kamisama', 'Tengen', '123456789', 'Uzui');
+
+INSERT INTO Directors (username, nationality, platform_id)
+VALUES ('kamisama', 'Japan', 10130),
+		('boss', 'Japan', 10131);
