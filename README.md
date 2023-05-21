@@ -7,3 +7,7 @@ pip install -r requirements.txt : This command installs all the packages specifi
 source env/bin/activate : Activate the virtual environment: 
 
 python3 -m venv env : Create a virtual environment: 
+
+export FLASK_APP=Login/app.py
+
+flask run
