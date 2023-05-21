@@ -6,6 +6,44 @@
 <body>
     <h1>Director Page</h1>
     <p>Welcome to the Director Page!</p>
-    <!-- Add more content as needed -->
+    
+    <form action="{{ url_for('director.list_theatres') }}" method="GET">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+        <label for="time_slot">Time Slot:</label>
+        <select id="time_slot" name="time_slot" required>
+            <option value="1">Slot 1</option>
+            <option value="2">Slot 2</option>
+            <option value="3">Slot 3</option>
+            <option value="4">Slot 4</option>
+        </select><br><br>
+        <input type="submit" value="List Theatres">
+    </form>
+
+    <br>
+
+    
+
+    <form action="{{ url_for('director.add_movie_session') }}" method="POST">
+        <label for="movie_id">Movie ID:</label>
+        <input type="text" id="movie_id" name="movie_id" required><br><br>
+        <label for="movie_name">Movie Name:</label>
+        <input type="text" id="movie_name" name="movie_name" required><br><br>
+        <label for="theatre_id">Theatre ID:</label>
+        <input type="text" id="theatre_id" name="theatre_id" required><br><br>
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+        <label for="time_slot">Time Slot:</label>
+        <select id="time_slot" name="time_slot" required>
+            <option value="1">Slot 1</option>
+            <option value="2">Slot 2</option>
+            <option value="3">Slot 3</option>
+            <option value="4">Slot 4</option>
+        </select><br><br>
+        <input type="submit" value="Add Movie Session">
+    </form>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
 </body>
 </html>

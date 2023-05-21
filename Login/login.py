@@ -1,7 +1,7 @@
 #import sys
 #sys.path.append("../App")
 from ..App.db_config import connection
-
+from flask import session
 from flask import Flask, render_template, request, redirect, Blueprint
 
 #app = Flask(__name__)
@@ -13,7 +13,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
+        session['username'] = username
 
         # Perform database validation here
         cursor = connection.cursor()

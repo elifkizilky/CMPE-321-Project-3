@@ -3,9 +3,10 @@ from .DatabaseManager.databaseManager import databaseManager_bp
 from .Login.login import login_bp
 from .Director.director import director_bp
 from .Audience.audience import audience_bp
+from .config import Config
 
 app = Flask(__name__)
-
+app.secret_key = Config.API_KEY
 # Register blueprints
 app.register_blueprint(login_bp, url_prefix='/login')
 app.register_blueprint(databaseManager_bp, url_prefix='/databaseManager')

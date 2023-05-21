@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Theatres</title>
+</head>
+<body>
+    <h1>Theatres</h1>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Theatre ID</th>
+                <th>District</th>
+                <th>Theatre Capacity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for theatre in theatres %}
+            <tr>
+                <td>{{ theatre[0] }}</td>
+                <td>{{ theatre[1] }}</td>
+                <td>{{ theatre[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</body>
+</html>
