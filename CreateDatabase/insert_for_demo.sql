@@ -35,14 +35,14 @@ VALUES ('kamisama', 'Japan', 10130),
 
 
 INSERT INTO Movies (movie_id, movie_name, average_rating, username, duration)
-VALUES (1, 'Funny Games', 4.5, 'michanek', 108),
-       (2, 'Love', 4.8, 'michanek', 127),
-       (3, 'Cache', 4.2, 'michanek', 117),
-       (4, 'Memento', 4.5, 'chrisnolan', 113),
-       (5, 'Inception', 4.8, 'chrisnolan', 148),
-       (6, 'The Dark Knight', 4.2, 'chrisnolan', 152),
-       (7, 'Interstellar', 4.7, 'chrisnolan', 169),
-       (8, 'Tenet', 4.6, 'chrisnolan', 150);
+VALUES (1, 'Funny Games', 4.5, 'michanek', 1),
+       (2, 'Love', 4.8, 'michanek', 1),
+       (3, 'Cache', 4.2, 'michanek', 1),
+       (4, 'Memento', 4.5, 'chrisnolan', 1),
+       (5, 'Inception', 4.8, 'chrisnolan', 1),
+       (6, 'The Dark Knight', 4.2, 'chrisnolan', 1),
+       (7, 'Interstellar', 4.7, 'chrisnolan', 2),
+       (8, 'Tenet', 4.6, 'chrisnolan', 2);
 
 INSERT INTO Theatres (theatre_id, theatre_capacity, theatre_name, district)
 VALUES (1, 200, 'Theatre A', 'District 1'),
@@ -68,7 +68,8 @@ VALUES  ('kingOfForest', 1),
         ('kingOfForest', 4),
         ('kingOfForest', 5),
         ('kingOfForest', 6),
-        ('blonde', 2);
+        ('blonde', 2)
+        ('blonde', 12);
 
 INSERT INTO AudienceSubscribe (username, platform_id)
 VALUES  ('kingOfForest', 10131),
