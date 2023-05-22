@@ -52,14 +52,14 @@ VALUES (1, 200, 'Theatre A', 'District 1'),
        (5, 250, 'Theatre E', 'District 2');
 
 
-INSERT INTO MovieSessions (session_id, time_slot, session_date, movie_id, theatre_id)
-VALUES (1, 1, '2023-05-22', 1, 1),
-       (2, 2, '2023-05-22', 2, 2),
-       (3, 3, '2023-05-23', 1, 1),
-       (4, 4, '2023-05-24', 3, 3),
-       (5, 1, '2023-05-25', 4, 1),
-       (6, 2, '2023-05-26', 5, 2),
-       (7, 3, '2023-05-27', 6, 1);
+INSERT INTO MovieSessions (time_slot, session_date, movie_id, theatre_id)
+VALUES (1, '2023-05-22', 1, 1),
+       (2, '2023-05-22', 2, 2),
+       (3, '2023-05-23', 1, 1),
+       (4, '2023-05-24', 3, 3),
+       (1, '2023-05-25', 4, 1),
+       (2, '2023-05-26', 5, 2),
+       (3, '2023-05-27', 6, 1);
 
 
 INSERT INTO AudienceBuy (username, session_id)
