@@ -2,10 +2,67 @@
 <html>
 <head>
     <title>Audience Page</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Audience Page</h1>
     <p>Welcome to the Audience Page!</p>
-    <!-- Add more content as needed -->
+
+    <div class="grid-container">
+
+
+        <div>
+            <h2>Buy Ticket</h2>
+
+            <form action="{{ url_for('audience.buyTicket') }}" method="POST">
+                <label for="session_id">Session ID:</label>
+                <input type="text" id="session_id" name="session_id" required>
+                <button type="submit">Buy Ticket</button>
+            </form>
+            {% if error_message %}
+            <p>{{ error_message }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <h2>View Tickets</h2>
+            {% if tickets %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Movie ID</th>
+                        <th>Movie Name</th>
+                        <th>Session ID</th>
+                        <th>Rating</th>
+                        <th>Overall Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket[0] }}</td>
+                        <td>{{ ticket[1] }}</td>
+                        <td>{{ ticket[2] }}</td>
+                        <td>{{ ticket[3] }}</td>
+                        <td>{{ ticket[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>This audience does not have a ticket yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2>List Movies</h2>
+    <p>Click this button to list all the movies!</p>
+    <a href="{{ url_for('audience.listMovies') }}"><button>List Movies</button></a>
 </body>
 </html>

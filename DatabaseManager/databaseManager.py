@@ -145,3 +145,26 @@ def viewAudienceRatings():
         return render_template('databaseManager/viewAudienceRatings.html', ratings=ratings)
 
     return render_template('databaseManager/viewAudienceRatings.html')
+
+
+@databaseManager_bp.route('/viewMovieRating', methods=['GET', 'POST'])
+def viewMovieRating():
+    if request.method == 'POST':
+        movie_id = request.form['movie_id']
+        cursor = connection.cursor()
+
+        # Retrieve the average rating of the specified movie
+        query = "SELECT r.movie_id, m.movie_name, AVG(rating) AS overall_rating FROM Rates r JOIN Movies m ON r.movie_id = m.movie_id WHERE r.movie_id = %s GROUP BY r.movie_id"
+        cursor.execute(query, (movie_id,))
+        rating = cursor.fetchone()
+
+        if rating:
+            movie_id = rating[0]
+            movie_name = rating[1]
+            overall_rating = rating[2]
+            return render_template('databaseManager/viewMovieRating.html', movie_id=movie_id, movie_name=movie_name, overall_rating=overall_rating)
+        else:
+            message = "No rating found for this movie"
+            return render_template('databaseManager/viewMovieRating.html', message= message)
+
+    return render_template('databaseManager/viewMovieRating.html')
