@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from ..App.db_config import connection
+from flask import session
 
 audience_bp = Blueprint('audience', __name__)
 
@@ -54,3 +55,47 @@ def listMovies():
         movies_with_predecessors.append((movie_id, movie_name, director_surname, platform, theatre_id, time_slot, str_precedes))
         movies_with_predecessors = list(dict.fromkeys(movies_with_predecessors)) #to remove the duplicates
     return render_template('audience/listMovies.html', movies = movies_with_predecessors)
+
+
+
+@audience_bp.route('/buyTicket', methods=['POST'])
+def buyTicket():
+    session_id = request.form['session_id']
+    username = session.get('username')
+    cursor = connection.cursor()
+
+    try:
+        # Check if the session ID is different from the sessions already bought by the audience
+        query_existing_sessions = "SELECT * FROM AudienceBuy WHERE username = %s AND session_id = %s"
+        cursor.execute(query_existing_sessions, (username, session_id))
+        existing_sessions = cursor.fetchall()
+        if existing_sessions:
+            flash('You have already bought a ticket for this session.')
+            return redirect(url_for('audience.audience'))
+
+        # Check if the theatre capacity is full
+        query_capacity = """
+        select t.theatre_capacity from moviesessions ms join theatres t 
+        on t.theatre_id  = ms.theatre_id where ms.session_id = %s
+        """
+        cursor.execute(query_capacity, (session_id,))
+        theatre_capacity = cursor.fetchone()[0]
+
+        if theatre_capacity == 0:
+            flash('The theatre capacity is full for this session. Please choose another session.')
+            return redirect(url_for('audience.audience'))
+
+        # Buy the ticket
+        query_buy_ticket = "INSERT INTO AudienceBuy (username, session_id) VALUES (%s, %s)"
+        cursor.execute(query_buy_ticket, (username, session_id))
+        connection.commit()
+
+        flash('Ticket is bought.')
+        return redirect(url_for('audience.audience'))
+
+    except Exception as e:
+        error_message = f"An error occurred while buying the ticket: {str(e)}"
+        flash(error_message)
+        return redirect(url_for('audience.audience'))
+
+

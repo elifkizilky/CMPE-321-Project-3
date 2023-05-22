@@ -15,11 +15,11 @@
     <p>Welcome to the Database Manager Page!</p>
     <div class="container">
         <div>
-            <h1>Add User</h1>
+            <h2>Add User</h2>
             <p>Click this button to add a new user!</p>
             <a href="{{ url_for('databaseManager.addUser') }}"><button>Add User</button></a>
 
-            <h1>Delete Audience</h1>
+            <h2>Delete Audience</h2>
             <form action="{{ url_for('databaseManager.deleteAudience') }}" method="POST">
                 <label for="delete_username">Username:</label>
                 <input type="text" id="delete_username" name="username" required><br>
@@ -35,25 +35,25 @@
             {% endif %}
         </div>
         <div>
-            <h1>View All Directors</h1>
+            <h2>View All Directors</h2>
             <p>Click this button to view all the directors!</p>
             <a href="{{ url_for('databaseManager.viewDirectors') }}"><button>View Directors</button></a>
 
-            <h1>View Audience Ratings</h1>
+            <h2>View Audience Ratings</h2>
             <p>Click this button to view the ratings of the audience!</p>
             <a href="{{ url_for('databaseManager.viewAudienceRatings') }}"><button>View Audience Ratings</button></a>
         </div>
         <div>
-            <h1>View Movie Rating</h1>
+            <h2>View Movie Rating</h2>
             <p>Click this button to view the average rating of the movie!</p>
             <a href="{{ url_for('databaseManager.viewMovieRating') }}"><button>View Movie Rating</button></a>
 
-            <h1>View Movies of Director</h1>
+            <h2>View Movies of Director</h2>
             <p>Click this button to view all the movies of a director!</p>
             <a href="{{ url_for('databaseManager.viewDirectorMovies') }}"><button>View Movies of Director</button></a>
         </div>
         <div>
-            <h1>Update Director Platform ID</h1>
+            <h2>Update Director Platform ID</h2>
             <form action="{{ url_for('databaseManager.updateDirectorPlatform') }}" method="POST">
                 <label for="update_username">Director Username:</label>
                 <input type="text" id="update_username" name="username" required><br>
