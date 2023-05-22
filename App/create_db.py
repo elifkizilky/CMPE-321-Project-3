@@ -147,6 +147,7 @@ def execute_triggers():
             WHERE movie_id = NEW.movie_id;
         END;""" 
     cursor.execute(average_rating_trigger)
+    connection.commit()
     
     return "Triggers are executed"
  

@@ -98,7 +98,7 @@ Foreign key (later_id) REFERENCES Movies(movie_id)
 );
 
 CREATE TABLE IF NOT EXISTS MovieSessions(
-	session_id INTEGER NOT NULL,
+	session_id INTEGER AUTO_INCREMENT NOT NULL,
 	time_slot INTEGER NOT NULL,
     session_date DATE NOT NULL,
     movie_id INTEGER NOT NULL,
