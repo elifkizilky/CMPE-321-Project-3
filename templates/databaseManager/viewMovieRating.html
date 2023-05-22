@@ -3,6 +3,51 @@
 <head>
     <title>View Movie Rating</title>
     <style>
+        body {
+            background-color: #282262;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #282262;
+            border-radius: 10px;
+        }
+        
+        form {
+            display: flex;
+            align-items: center;
+            color: white;
+            
+        }
+        
+        label {
+            color: #282262;
+            margin-right: 10px;
+        }
+        
+        input[type="text"] {
+            padding: 5px;
+        }
+        
+        button[type="submit"] {
+            padding: 5px 10px;
+            background-color: #282262;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        h1 {
+            color: #282262;
+            text-align: center;
+        }
+        
+        h3 {
+            color: #282262;
+        }
+        
         .logout-button {
             position: absolute;
             top: 10px;
@@ -11,22 +56,25 @@
     </style>
 </head>
 <body>
-    <h1>View Movie Rating</h1>
-    <form action="{{ url_for('databaseManager.viewMovieRating') }}" method="POST">
-        <label for="movie_id">Movie ID:</label>
-        <input type="text" id="movie_id" name="movie_id" required>
-        <button type="submit">View Rating</button>
-    </form>
+    <div class="container">
+        <h1>View Movie Rating</h1>
+        <form action="{{ url_for('databaseManager.viewMovieRating') }}" method="POST">
+            <label for="movie_id">Movie ID:</label>
+            <input type="text" id="movie_id" name="movie_id" required>
+            <button type="submit">View Rating</button>
+        </form>
 
-    {% if movie_id %}
-        <h3>Movie ID: {{ movie_id }}</h3>
-        <h3>Movie Name: {{ movie_name }}</h3>
-        <h3>Overall Rating: {{ overall_rating }}</h3>
-    {% endif %}
+        {% if movie_id %}
+            <h3>Movie ID: {{ movie_id }}</h3>
+            <h3>Movie Name: {{ movie_name }}</h3>
+            <h3>Overall Rating: {{ overall_rating }}</h3>
+        {% endif %}
 
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
-    <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+        
+        <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
+    </div>
 </body>
 </html>

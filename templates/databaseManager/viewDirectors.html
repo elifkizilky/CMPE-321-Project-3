@@ -3,6 +3,38 @@
 <head>
     <title>Directors</title>
     <style>
+        body {
+            background-color: #282262;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #282262;
+            border-radius: 10px;
+        }
+        
+        table {
+            color: #282262;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background-color: #282262;
+            color: white;
+            padding: 10px;
+        }
+        
+        td {
+            padding: 10px;
+        }
+        
+        h1 {
+            color: #282262;
+            text-align: center;
+        }
+        
         .logout-button {
             position: absolute;
             top: 10px;
@@ -11,29 +43,31 @@
     </style>
 </head>
 <body>
-    <h1>Directors</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Nation</th>
-                <th>Platform ID</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for director in directors %}
-            <tr>
-                <td>{{ director[0] }}</td>
-                <td>{{ director[1] }}</td>
-                <td>{{ director[2] }}</td>
-                <td>{{ director[3] }}</td>
-                <td>{{ director[4] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
+    <div class="container">
+        <h1>Directors</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Nation</th>
+                    <th>Platform ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for director in directors %}
+                <tr>
+                    <td>{{ director[0] }}</td>
+                    <td>{{ director[1] }}</td>
+                    <td>{{ director[2] }}</td>
+                    <td>{{ director[3] }}</td>
+                    <td>{{ director[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
+    </div>
 </body>
 </html>

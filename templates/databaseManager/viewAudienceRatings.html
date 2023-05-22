@@ -3,6 +3,65 @@
 <head>
     <title>View Audience Ratings</title>
     <style>
+        body {
+            background-color: #282262;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #282262;
+            border-radius: 10px;
+        }
+        
+        form {
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        label {
+            color: #282262;
+            margin-right: 10px;
+        }
+        
+        input[type="text"] {
+            padding: 5px;
+        }
+        
+        button[type="submit"] {
+            padding: 5px 10px;
+            background-color: #282262;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        h1 {
+            color: #282262;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #282262;
+        }
+        
+        table {
+            color: #282262;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background-color: #282262;
+            color: white;
+            padding: 10px;
+        }
+        
+        td {
+            padding: 10px;
+        }
+        
         .logout-button {
             position: absolute;
             top: 10px;
@@ -11,36 +70,39 @@
     </style>
 </head>
 <body>
-    <h1>View Audience Ratings</h1>
-    <form action="{{ url_for('databaseManager.viewAudienceRatings') }}" method="POST">
-        <label for="audience_username">Audience Username:</label>
-        <input type="text" id="audience_username" name="username" required>
-        <button type="submit">View Ratings</button>
-    </form>
+    <div class="container">
+        <h1>View Audience Ratings</h1>
+        <form action="{{ url_for('databaseManager.viewAudienceRatings') }}" method="POST">
+            <label for="audience_username">Audience Username:</label>
+            <input type="text" id="audience_username" name="username" required>
+            <button type="submit">View Ratings</button>
+        </form>
 
-    {% if ratings %}
-        <h2>Ratings of Audience: {{ username }}</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Movie ID</th>
-                    <th>Movie Name</th>
-                    <th>Rating</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for rating in ratings %}
-                <tr>
-                    <td>{{ rating[0] }}</td>
-                    <td>{{ rating[1] }}</td>
-                    <td>{{ rating[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>{{ message }}</p>
-    {% endif %}
-    <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
+        {% if ratings %}
+            <h2>Ratings of Audience: {{ username }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Movie ID</th>
+                        <th>Movie Name</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rating in ratings %}
+                    <tr>
+                        <td>{{ rating[0] }}</td>
+                        <td>{{ rating[1] }}</td>
+                        <td>{{ rating[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>{{ message }}</p>
+        {% endif %}
+        
+        <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
+    </div>
 </body>
 </html>

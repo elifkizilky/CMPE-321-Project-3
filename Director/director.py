@@ -10,14 +10,11 @@ def director():
 
 @director_bp.route('/theatres', methods=['GET'])
 def list_theatres():
-     # Replace with your database name
     theatres=[]
     date = request.args.get('date')
     time_slot = request.args.get('time_slot')
     cursor = connection.cursor()
-    cursor.execute("""SELECT *
-                    FROM MovieSessions""")
-    print(cursor.fetchall())
+
     try:
         cursor.execute("""SELECT theatre_name, Theatres.theatre_id, district, theatre_capacity 
                         FROM Theatres 
@@ -28,10 +25,8 @@ def list_theatres():
         theatres = cursor.fetchall()
     except Exception as e:
         message=str(e)
-    
 
-    # Execute the query to retrieve theatres for the given time slot
-    if not theatres:
+    if len(theatres)==0:
         message = "No theatres available for the given date and time slot."
     else:
         message = None
@@ -40,15 +35,11 @@ def list_theatres():
 
 @director_bp.route('/movies', methods=['GET'])
 def list_movies():
-     # Replace with your database name
     movies_with_predecessors=[]
     movies=[]
     cursor = connection.cursor()
-    cursor.execute("""SELECT *
-                    FROM MovieSessions""")
-    print(cursor.fetchall())
+
     username = session.get('username')
-    print(username)
     message=""
     try:
         cursor.execute("""SELECT Movies.movie_id, Movies.movie_name, theatre_id, time_slot, session_date, former_id
@@ -78,13 +69,10 @@ def list_movies():
             date= movie[4]
             predecessors = set()
             predecessors.add(movie[5]) #add the predecessor
-            
             for other in movies:
                 other_id = other[0]
                 if movie_id == other_id:
                     predecessors.add(other[5]) #trace the movies again for each movie and if there is a predecessor, add it
-                    
-
             separator = ', '
             str_precedes = separator.join(str(pre) for pre in predecessors)
 
@@ -101,13 +89,9 @@ def list_tickets():
      # Replace with your database name
     tickets=[]
     cursor = connection.cursor()
-    cursor.execute("""SELECT *
-                    FROM AudienceBuy""")
-    print("audience buy: ",cursor.fetchall())
 
     username = session.get('username')
     movie_id = request.args.get('movie_id')
-
     print(username, movie_id)
     message=""
     try:
@@ -135,12 +119,7 @@ def list_tickets():
 @director_bp.route('/add_movie_session', methods=['POST'])
 def add_movie_session():
     cursor = connection.cursor()
-    cursor.execute("""SELECT *
-                    FROM Directors""")
-    print(cursor.fetchall())
-    cursor.execute("""SELECT *
-                    FROM MovieSessions""")
-    print(cursor.fetchall())
+    
     #retrieve the form data
     movie_id = request.form.get('movie_id')
     movie_name = request.form.get('movie_name')
@@ -166,7 +145,7 @@ def add_movie_session():
     except Exception as e: 
         message=str(e)
         return render_template('director/director.html', message=message)
-    print("found theatre capacity")
+   
     try:
         cursor.execute("""SELECT movie_name 
                         FROM Movies
@@ -184,7 +163,6 @@ def add_movie_session():
                 return render_template('director/director.html', message=message)
     except Exception as e: 
         message=str(e)
-        print("why")
         return render_template('director/director.html', message=message)
     
     try:
@@ -216,14 +194,6 @@ def add_movie_session():
 def add_predecessor():
     # Retrieve the form data
     cursor = connection.cursor()
-    cursor.execute("""SELECT *
-                    FROM Movies""")
-    print(cursor.fetchall())
-    cursor.execute("""SELECT *
-                    FROM Precedes""")
-    print(cursor.fetchall())
-    
-    
     movie_id_pred = request.form.get('movie_id_pred')
     movie_id = request.form.get('movie_id')
     try:
@@ -234,10 +204,7 @@ def add_predecessor():
         message = "Predecessor is successfully added"
     except Exception as e: 
         message=str(e)
-   
-    cursor.execute("""SELECT *
-                    FROM Precedes""")
-    print(cursor.fetchall())
+
     connection.commit()
     return render_template('director/director.html', message=message)
 
@@ -245,12 +212,7 @@ def add_predecessor():
 def update_name():
     # Retrieve the form data
     cursor = connection.cursor()
-    cursor.execute("""SELECT *
-                    FROM Movies""")
-    print(cursor.fetchall())
-    cursor.execute("""SELECT *
-                    FROM Precedes""")
-    print(cursor.fetchall())
+  
     movie_id = request.form.get('movie_id')
     movie_name = request.form.get('movie_name')
     username = session.get('username')
@@ -272,8 +234,6 @@ def update_name():
     except Exception as e: 
         message=str(e)
    
-    cursor.execute("""SELECT *
-                    FROM Precedes""")
-    print(cursor.fetchall())
+   
     connection.commit()
     return render_template('director/director.html', message=message)
