@@ -3,7 +3,6 @@
 <head>
     <title>Director Page</title>
     <style>
-        /* CSS styles for the frame */
         body {
             background-color: #282262;
             padding: 20px;
@@ -16,20 +15,25 @@
             border-radius: 10px;
         }
         
-        /* CSS styles for the form grid layout */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 20px;
         }
         
-        /* CSS styles for the forms */
         form {
             background-color: #282262;
             padding: 20px;
             border-radius: 10px;
             color: white;
         }
+        
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
     </style>
 </head>
 
@@ -135,5 +139,6 @@
     </div>
 </div>
 </div>
+<a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
 </body>
 </html>

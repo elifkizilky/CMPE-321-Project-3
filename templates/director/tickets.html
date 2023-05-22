@@ -2,32 +2,67 @@
 <html>
 <head>
     <title>Tickets</title>
+    <style>
+        body {
+            background-color: #282262;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #282262;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #282262;
+        }
+        
+        th {
+            background-color: #282262;
+            color: white;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Tickets</h1>
-    {% if message %}
-    <p>{{ message }}</p>
-    {% else %}
-    <table>
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>TName</th>
-                <th>Surname</th>
-      
-            </tr>
-        </thead>
-        <tbody>
-            {% for ticket in tickets %}
-            <tr>
-                <td>{{ ticket[0] }}</td>
-                <td>{{ ticket[1] }}</td>
-                <td>{{ ticket[2] }}</td>
-               
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
+    <div class="container">
+        <h1>Tickets</h1>
+        {% if message %}
+        <p>{{ message }}</p>
+        {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>TName</th>
+                    <th>Surname</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td>{{ ticket[0] }}</td>
+                    <td>{{ ticket[1] }}</td>
+                    <td>{{ ticket[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
 </body>
 </html>
