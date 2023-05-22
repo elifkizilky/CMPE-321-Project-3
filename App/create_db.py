@@ -145,6 +145,32 @@ def execute_triggers():
             WHERE movie_id = NEW.movie_id;
         END;""" 
     cursor.execute(average_rating_trigger)
+    
+    capacity_trigger="""CREATE TRIGGER check_capacity_trigger
+        BEFORE INSERT ON AudienceBuy
+        FOR EACH ROW
+        BEGIN
+            DECLARE session_capacity INTEGER;
+            
+            -- Retrieve the capacity for the corresponding MovieSession
+            SELECT left_capacity INTO session_capacity
+            FROM MovieSessions
+            WHERE session_id = NEW.session_id;
+            
+            -- Check if the capacity is greater than 0
+            IF session_capacity > 0 THEN
+                -- Decrement the capacity by one
+                UPDATE MovieSessions
+                SET left_capacity = left_capacity - 1
+                WHERE session_id = NEW.session_id;
+            ELSE
+                -- Raise an error if the capacity is not greater than 0
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Session is full. Cannot insert into AudienceBuy.';
+            END IF;
+
+        
+        END;"""
+    cursor.execute(capacity_trigger)
     connection.commit()
     
     return "Triggers are executed"
