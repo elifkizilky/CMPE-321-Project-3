@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS MovieSessions(
     session_date DATE NOT NULL,
     movie_id INTEGER NOT NULL,
     theatre_id INTEGER, #this is "on" relation in ER diagram
+	left_capacity INTEGER NOT NULL,
 	PRIMARY KEY (session_id),
     UNIQUE(theatre_id, session_date, time_slot),
 	FOREIGN KEY(movie_id)	#this comes from "movieof" relation in ER diagram
@@ -226,6 +227,7 @@ CREATE TABLE IF NOT EXISTS MovieSessions(
     session_date DATE NOT NULL,
     movie_id INTEGER NOT NULL,
     theatre_id INTEGER, #this is "on" relation in ER diagram
+	left_capacity INTEGER NOT NULL,
 	PRIMARY KEY (session_id),
     UNIQUE(theatre_id, session_date, time_slot),
 	FOREIGN KEY(movie_id)	#this comes from "movieof" relation in ER diagram
