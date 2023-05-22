@@ -147,7 +147,19 @@ def add_movie_session():
 
     username = session.get('username')
     print(username)
-    
+    try:
+        cursor.execute("""SELECT theatre_capacity 
+                        FROM Theatres
+                        WHERE theatre_id=%s""", (theatre_id,))
+        print(cursor.fetchone())
+        if(cursor.fetchone()):
+            left_capacity= cursor.fetchone()[0]
+            print("the number of tickets",left_capacity)
+           
+    except Exception as e: 
+        message=str(e)
+        print("why")
+        return render_template('director/director.html', message=message)
     try:
         cursor.execute("""SELECT movie_name 
                         FROM Movies
