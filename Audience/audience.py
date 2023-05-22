@@ -6,7 +6,19 @@ audience_bp = Blueprint('audience', __name__)
 
 @audience_bp.route('/')
 def audience():
-    return render_template('audience/audience.html')
+    username = session.get('username')
+    cursor = connection.cursor()
+
+    # Retrieve the existing tickets of the audience
+    query_tickets = """
+    select ms.movie_id, m.movie_name, a.session_id, r.rating, 
+    m.average_rating as overall_rating from audiencebuy a join moviesessions ms on a.session_id  = ms.session_id 
+    join movies m  on m.movie_id = ms.movie_id left join rates r on r.movie_id  = m.movie_id and a.username = r.username  where a.username = %s
+    """
+    cursor.execute(query_tickets, (username,))
+    tickets = cursor.fetchall()
+
+    return render_template('audience/audience.html', tickets=tickets)
 
 #buralar düzeltilecek
 
@@ -70,8 +82,9 @@ def buyTicket():
         cursor.execute(query_existing_sessions, (username, session_id))
         existing_sessions = cursor.fetchall()
         if existing_sessions:
-            flash('You have already bought a ticket for this session.')
-            return redirect(url_for('audience.audience'))
+            error_message = 'You have already bought a ticket for this session.'
+            tickets = get_tickets(username)
+            return render_template('audience/audience.html', tickets=tickets, error_message=error_message)
 
         # Check if the theatre capacity is full
         query_capacity = """
@@ -82,8 +95,9 @@ def buyTicket():
         theatre_capacity = cursor.fetchone()[0]
 
         if theatre_capacity == 0:
-            flash('The theatre capacity is full for this session. Please choose another session.')
-            return redirect(url_for('audience.audience'))
+            error_message = 'The theatre capacity is full for this session. Please choose another session.'
+            tickets = get_tickets(username)
+            return render_template('audience/audience.html', tickets=tickets, error_message=error_message)
 
         # Buy the ticket
         query_buy_ticket = "INSERT INTO AudienceBuy (username, session_id) VALUES (%s, %s)"
@@ -91,11 +105,30 @@ def buyTicket():
         connection.commit()
 
         flash('Ticket is bought.')
-        return redirect(url_for('audience.audience'))
 
+        # Retrieve the updated list of tickets
+        tickets = get_tickets(username)
+        return render_template('audience/audience.html', tickets=tickets)
     except Exception as e:
         error_message = f"An error occurred while buying the ticket: {str(e)}"
-        flash(error_message)
-        return redirect(url_for('audience.audience'))
+        tickets = get_tickets(username)
+        return render_template('audience/audience.html', tickets=tickets, error_message=error_message)
+
+
+def get_tickets(username):
+    cursor = connection.cursor()
+
+    query_tickets = """
+    SELECT ms.movie_id, m.movie_name, a.session_id, r.rating, m.average_rating as overall_rating
+    FROM audiencebuy a
+    JOIN moviesessions ms ON a.session_id = ms.session_id
+    JOIN movies m ON ms.movie_id = m.movie_id
+    LEFT JOIN rates r ON r.movie_id = m.movie_id AND a.username = r.username
+    WHERE a.username = %s
+    """
+    cursor.execute(query_tickets, (username,))
+    tickets = cursor.fetchall()
+    return tickets
+
 
 
