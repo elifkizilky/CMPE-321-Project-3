@@ -49,6 +49,7 @@ VALUES (1, 'Funny Games', 0, 'michanek', 1),
        (10, 'The Lord of the Rings: The Two Towers', 0, 'peterJackson', 2),
        (11, 'The Lord of the Rings: The Return of the King', 0, 'peterJackson', 3);
 
+
 INSERT INTO Theatres (theatre_id, theatre_capacity, theatre_name, district)
 VALUES (1, 200, 'Theatre A', 'District 1'),
        (2, 150, 'Theatre B', 'District 2'),
@@ -57,19 +58,18 @@ VALUES (1, 200, 'Theatre A', 'District 1'),
        (5, 250, 'Theatre E', 'District 2');
 
 
-INSERT INTO MovieSessions (session_id, time_slot, session_date, movie_id, theatre_id)
-VALUES  (1, 1, '2023-05-22', 1, 1),
-        (2, 2, '2023-05-22', 2, 2),
-        (3, 3, '2023-05-23', 1, 1),
-        (4, 4, '2023-05-24', 3, 3),
-        (5, 1, '2023-05-25', 4, 1),
-        (6, 2, '2023-05-26', 5, 2),
-        (7, 3, '2023-05-27', 6, 1),
-        (8, 4, '2023-05-28', 7, 3),
-        (9, 1, '2023-05-29', 8, 1),
-        (10, 2, '2023-05-30', 9, 2),
-        (11, 3, '2023-05-31', 10, 1),
-        (12, 4, '2023-06-01', 11, 3);
+
+INSERT INTO MovieSessions (time_slot, session_date, movie_id, theatre_id)
+VALUES (1, '2023-05-22', 1, 1),
+       (2, '2023-05-22', 2, 2),
+       (3, '2023-05-23', 1, 1),
+       (4, '2023-05-24', 3, 3),
+       (1, '2023-05-25', 4, 1),
+       (2, '2023-05-26', 5, 2),
+       (3, '2023-05-27', 6, 1);
+
+
+
 
 INSERT INTO AudienceBuy (username, session_id)
 VALUES  ('kingOfForest', 1),
@@ -77,7 +77,8 @@ VALUES  ('kingOfForest', 1),
         ('kingOfForest', 4),
         ('kingOfForest', 5),
         ('kingOfForest', 6),
-        ('blonde', 2);
+        ('blonde', 2)
+        ('blonde', 12);
 
 INSERT INTO AudienceSubscribe (username, platform_id)
 VALUES  ('kingOfForest', 10131),

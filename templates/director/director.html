@@ -2,27 +2,58 @@
 <html>
 <head>
     <title>Director Page</title>
+    <style>
+        /* CSS styles for the form grid layout */
+        body {
+            background-color: darkblue;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid darkblue;
+            border-radius: 10px;
+        }
+        
+        /* CSS styles for the form grid layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="container">
     <h1>Director Page</h1>
     <p>Welcome to the Director Page!</p>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
     
-    <form action="{{ url_for('director.list_theatres') }}" method="GET">
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required><br><br>
-        <label for="time_slot">Time Slot:</label>
-        <select id="time_slot" name="time_slot" required>
-            <option value="1">Slot 1</option>
-            <option value="2">Slot 2</option>
-            <option value="3">Slot 3</option>
-            <option value="4">Slot 4</option>
-        </select><br><br>
-        <input type="submit" value="List Theatres">
-    </form>
-
-    <br>
-
+    <div class="form-grid">
+        <div>
+        <h2>List Theatres</h2>
+        <form action="{{ url_for('director.list_theatres') }}" method="GET">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required><br><br>
+            <label for="time_slot">Time Slot:</label>
+            <select id="time_slot" name="time_slot" required>
+                <option value="1">Slot 1</option>
+                <option value="2">Slot 2</option>
+                <option value="3">Slot 3</option>
+                <option value="4">Slot 4</option>
+            </select><br><br>
+            <input type="submit" value="List Theatres">
+        </form>
+        </div>
     
+    
+    <div>
+
+    <h2>Add Movie Sessions</h2>
 
     <form action="{{ url_for('director.add_movie_session') }}" method="POST">
         <label for="movie_id">Movie ID:</label>
@@ -40,10 +71,61 @@
             <option value="3">Slot 3</option>
             <option value="4">Slot 4</option>
         </select><br><br>
+        <label for="duration">Duration:</label>
+        <select id="duration" name="duration" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select><br><br>
         <input type="submit" value="Add Movie Session">
     </form>
-    {% if message %}
-    <p>{{ message }}</p>
-    {% endif %}
+    
+    </div>  
+
+    <div>
+    <h2>Add Predecessor</h2>
+
+    <form action="{{ url_for('director.add_predecessor') }}" method="POST">
+        <label for="movie_id_pred">Movie ID of Predecessor:</label>
+        <input type="text" id="movie_id_pred" name="movie_id_pred" required><br><br>
+        <label for="movie_id">Movie ID</label>
+        <input type="text" id="movie_id" name="movie_id" required><br><br>
+      
+        <input type="submit" value="Add Predecessor">
+    </form>
+    
+    </div>
+
+    <div>
+        <h2>Change Movie Name</h2>
+    
+        <form action="{{ url_for('director.update_name') }}" method="POST">
+            <label for="movie_id">Movie ID:</label>
+            <input type="text" id="movie_id" name="movie_id" required><br><br>
+            <label for="movie_name">New Movie Name:</label>
+            <input type="text" id="movie_name" name="movie_name" required><br><br>
+          
+            <input type="submit" value="Change Name">
+        </form>
+        
+        </div>
+    <div>
+        <h2>List Movies</h2>
+        <form action="{{ url_for('director.list_movies') }}" method="GET">
+           
+            <input type="submit" value="List Movies directed by you">
+        </form>
+        </div>
+    <div>
+        <h2>List Tickets</h2>
+        <form action="{{ url_for('director.list_tickets') }}" method="GET">
+            <label for="movie_id">Movie ID:</label>
+            <input type="text" id="movie_id" name="movie_id" required><br><br>
+            <input type="submit" value="List Audience who bought a ticket for movies directed by you">
+        </form>
+    </div>
+</div>
+</div>
 </body>
 </html>
