@@ -6,7 +6,7 @@
 <body>
     <h1>Director Page</h1>
     <p>Welcome to the Director Page!</p>
-    
+    <h2>List Theatres</h2>
     <form action="{{ url_for('director.list_theatres') }}" method="GET">
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required><br><br>
@@ -22,7 +22,7 @@
 
     <br>
 
-    
+    <h2>Add Movie Sessions</h2>
 
     <form action="{{ url_for('director.add_movie_session') }}" method="POST">
         <label for="movie_id">Movie ID:</label>
@@ -51,6 +51,21 @@
     </form>
     {% if message %}
     <p>{{ message }}</p>
+    {% endif %}
+
+
+    <h2>Add Predecessor</h2>
+
+    <form action="{{ url_for('director.add_predecessor') }}" method="POST">
+        <label for="movie_id_pred">Movie ID of Predecessor:</label>
+        <input type="text" id="movie_id_pred" name="movie_id_pred" required><br><br>
+        <label for="movie_id">Movie ID</label>
+        <input type="text" id="movie_id" name="movie_id" required><br><br>
+      
+        <input type="submit" value="Add Predecessor">
+    </form>
+    {% if message2 %}
+    <p>{{ message2 }}</p>
     {% endif %}
 </body>
 </html>

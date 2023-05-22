@@ -51,10 +51,11 @@ def add_movie_session():
     username = session.get('username')
     print(username)
     
-    cursor.execute("""INSERT IGNORE INTO Movies
+    cursor.execute("""INSERT INTO Movies
     (movie_id, movie_name, average_rating, username, duration)
     VALUES (%s, %s, %s, %s, %s)
     """, (movie_id, movie_name, 0, username, duration))
+
     cursor.execute("""INSERT INTO MovieSessions 
     (session_id, time_slot, session_date, movie_id, theatre_id)
     VALUES (%s, %s, %s, %s, %s)
@@ -65,6 +66,39 @@ def add_movie_session():
     session_id+=1
     cursor.execute("""SELECT *
                     FROM Movies""")
+    print(cursor.fetchall())
+    
+    return render_template('director/director.html', message=message)
+
+@director_bp.route('/add_predecessor', methods=['POST'])
+def add_predecessor():
+    # Retrieve the form data
+    cursor = connection.cursor()
+    cursor.execute("""SELECT *
+                    FROM Movies""")
+    print(cursor.fetchall())
+    cursor.execute("""SELECT *
+                    FROM Precedes""")
+    print(cursor.fetchall())
+    
+    movie_id_pred = request.form.get('movie_id_pred')
+    movie_id = request.form.get('movie_id')
+    
+
+
+   
+    cursor.execute("""INSERT INTO Precedes
+    (former_id, later_id)
+    VALUES (%s, %s)
+    """, (movie_id_pred, movie_id))
+    
+   
+    message = "Predecessor is successfully added"
+   
+    # Provide a success message to the director
+    
+    cursor.execute("""SELECT *
+                    FROM Precedes""")
     print(cursor.fetchall())
     
     return render_template('director/director.html', message=message)
