@@ -3,6 +3,13 @@
 <head>
     <title>Audience Page</title>
     <style>
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+    <style>
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -15,11 +22,8 @@
     <p>Welcome to the Audience Page!</p>
 
     <div class="grid-container">
-
-
         <div>
             <h2>Buy Ticket</h2>
-
             <form action="{{ url_for('audience.buyTicket') }}" method="POST">
                 <label for="session_id">Session ID:</label>
                 <input type="text" id="session_id" name="session_id" required>
@@ -64,5 +68,7 @@
     <h2>List Movies</h2>
     <p>Click this button to list all the movies!</p>
     <a href="{{ url_for('audience.listMovies') }}"><button>List Movies</button></a>
+
+    <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
 </body>
 </html>
