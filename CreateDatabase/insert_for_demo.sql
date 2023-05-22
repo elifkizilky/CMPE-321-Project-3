@@ -25,24 +25,29 @@ VALUES ('demonslayer', 'tanjiro', '1234', 'kamado'),
         ('boss', 'muzan', '1234567', 'Kibutsuji'),
         ('michanek', 'Michael', '098765', 'Haneke'),
         ('chrisnolan', 'Christopher', '568979', 'Nolan'),
-        ('kamisama', 'Tengen', '123456789', 'Uzui');
+        ('kamisama', 'Tengen', '123456789', 'Uzui'),
+        ('peterJackson', 'Peter', '1234567', 'Jackson');
 
 INSERT INTO Directors (username, nationality, platform_id)
 VALUES ('kamisama', 'Japan', 10130),
         ('michanek', 'German', 10131),
         ('chrisnolan', 'English', 10131),
-	('boss', 'Japan', 10131);
+	('boss', 'Japan', 10131),
+        ('peterJackson', 'New Zealander', 10130);
 
 
 INSERT INTO Movies (movie_id, movie_name, average_rating, username, duration)
-VALUES (1, 'Funny Games', 4.5, 'michanek', 108),
-       (2, 'Love', 4.8, 'michanek', 127),
-       (3, 'Cache', 4.2, 'michanek', 117),
-       (4, 'Memento', 4.5, 'chrisnolan', 113),
-       (5, 'Inception', 4.8, 'chrisnolan', 148),
-       (6, 'The Dark Knight', 4.2, 'chrisnolan', 152),
-       (7, 'Interstellar', 4.7, 'chrisnolan', 169),
-       (8, 'Tenet', 4.6, 'chrisnolan', 150);
+VALUES (1, 'Funny Games', 0, 'michanek', 1),
+       (2, 'Love', 0, 'michanek', 2),
+       (3, 'Cache', 0, 'michanek', 3),
+       (4, 'Memento', 0, 'chrisnolan', 1),
+       (5, 'Inception', 0, 'chrisnolan', 2),
+       (6, 'The Dark Knight', 0, 'chrisnolan', 2),
+       (7, 'Interstellar', 0, 'chrisnolan', 1),
+       (8, 'Tenet', 0, 'chrisnolan', 2),
+       (9, 'The Lord of the Rings: The Fellowship of the Ring', 0, 'peterJackson', 2),
+       (10, 'The Lord of the Rings: The Two Towers', 0, 'peterJackson', 2),
+       (11, 'The Lord of the Rings: The Return of the King', 0, 'peterJackson', 3);
 
 INSERT INTO Theatres (theatre_id, theatre_capacity, theatre_name, district)
 VALUES (1, 200, 'Theatre A', 'District 1'),
@@ -53,14 +58,18 @@ VALUES (1, 200, 'Theatre A', 'District 1'),
 
 
 INSERT INTO MovieSessions (session_id, time_slot, session_date, movie_id, theatre_id)
-VALUES (1, 1, '2023-05-22', 1, 1),
-       (2, 2, '2023-05-22', 2, 2),
-       (3, 3, '2023-05-23', 1, 1),
-       (4, 4, '2023-05-24', 3, 3),
-       (5, 1, '2023-05-25', 4, 1),
-       (6, 2, '2023-05-26', 5, 2),
-       (7, 3, '2023-05-27', 6, 1);
-
+VALUES  (1, 1, '2023-05-22', 1, 1),
+        (2, 2, '2023-05-22', 2, 2),
+        (3, 3, '2023-05-23', 1, 1),
+        (4, 4, '2023-05-24', 3, 3),
+        (5, 1, '2023-05-25', 4, 1),
+        (6, 2, '2023-05-26', 5, 2),
+        (7, 3, '2023-05-27', 6, 1),
+        (8, 4, '2023-05-28', 7, 3),
+        (9, 1, '2023-05-29', 8, 1),
+        (10, 2, '2023-05-30', 9, 2),
+        (11, 3, '2023-05-31', 10, 1),
+        (12, 4, '2023-06-01', 11, 3);
 
 INSERT INTO AudienceBuy (username, session_id)
 VALUES  ('kingOfForest', 1),
@@ -82,3 +91,12 @@ VALUES ('kingOfForest', 1, 3.8),
        ('kingOfForest', 3, 4.8),
        ('kingOfForest', 4, 2.7),
        ('kingOfForest', 5, 3.5);
+
+
+INSERT INTO Precedes (former_id, later_id)
+VALUES (10,11),
+        (9,11),
+        (9,10);
+
+
+       

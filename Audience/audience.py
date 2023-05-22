@@ -5,26 +5,27 @@ audience_bp = Blueprint('audience', __name__)
 
 @audience_bp.route('/')
 def audience():
-    movies = get_all_movies_with_predecessors()
-    return render_template('audience/audience.html', movies=movies)
+    return render_template('audience/audience.html')
 
 #buralar düzeltilecek
 
-def get_all_movies_with_predecessors():
+@audience_bp.route('/listMovies')
+def listMovies():
     cursor = connection.cursor()
 
     # Retrieve all movies with their predecessor lists
-    query = "SELECT m.movie_id, m.movie_name, d.director_surname, p.platform_name, s.theatre_id, s.time_slot, GROUP_CONCAT(preceding_id) AS predecessors \
-             FROM Movies AS m \
-             INNER JOIN Directors AS d ON m.director_id = d.director_id \
-             INNER JOIN Platforms AS p ON m.platform_id = p.platform_id \
-             INNER JOIN MovieSessions AS s ON m.movie_id = s.movie_id \
-             LEFT JOIN Precedes AS pc ON m.movie_id = pc.later_id \
-             GROUP BY m.movie_id"
+    query = "SELECT m.movie_id, m.movie_name, u.surname, r.platform_name, ms.theatre_id, ms.time_slot, p.former_id \
+             FROM Movies m \
+             JOIN Directors d ON m.username = d.username\
+             join Users u on u.username = d.username \
+             INNER JOIN ratingplatforms r ON r.platform_id = d.platform_id \
+             JOIN MovieSessions ms ON m.movie_id = ms.movie_id \
+             LEFT JOIN Precedes p ON m.movie_id = p.later_id order by movie_id ASC"
+         
 
     cursor.execute(query)
     movies = cursor.fetchall()
-
+    print(movies)
     # Convert the predecessors list to a string
     movies_with_predecessors = []
     for movie in movies:
@@ -39,4 +40,4 @@ def get_all_movies_with_predecessors():
         # Append the movie with its attributes and predecessor list to the list
         movies_with_predecessors.append((movie_id, movie_name, director_surname, platform, theatre_id, time_slot, predecessors))
 
-    return movies_with_predecessors
+    return render_template('audience/listMovies.html', movies = movies)
