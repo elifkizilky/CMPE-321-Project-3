@@ -2,6 +2,13 @@
 <html>
 <head>
     <title>Movies</title>
+    <style>
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Movies</h1>
@@ -31,5 +38,7 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
 </body>
 </html>

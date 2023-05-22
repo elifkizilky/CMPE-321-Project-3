@@ -2,6 +2,13 @@
 <html>
 <head>
     <title>View Movie Rating</title>
+    <style>
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>View Movie Rating</h1>
@@ -20,5 +27,6 @@
     {% if message %}
         <p>{{ message }}</p>
     {% endif %}
+    <a class="logout-button" href="{{ url_for('login.logout') }}"><button>Logout</button></a>
 </body>
 </html>

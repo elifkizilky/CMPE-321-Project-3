@@ -83,8 +83,7 @@ VALUES  ('kingOfForest', 1),
         ('kingOfForest', 4),
         ('kingOfForest', 5),
         ('kingOfForest', 6),
-        ('blonde', 2),
-        ('blonde', 12);
+        ('blonde', 2);
 
 INSERT INTO AudienceSubscribe (username, platform_id)
 VALUES  ('kingOfForest', 10131),

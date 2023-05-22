@@ -43,3 +43,9 @@ def login():
             return "Invalid credentials"
 
     return render_template('login/login.html')
+
+
+@login_bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/login')
