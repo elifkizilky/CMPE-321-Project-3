@@ -25,7 +25,10 @@ def listMovies():
 
     cursor.execute(query)
     movies = cursor.fetchall()
-    print(movies)
+    #print(movies)
+    last_element = movies[-1]
+    range = last_element[0]
+    print(range)
     # Convert the predecessors list to a string
     movies_with_predecessors = []
     for movie in movies:
@@ -35,9 +38,19 @@ def listMovies():
         platform = movie[3]
         theatre_id = movie[4]
         time_slot = movie[5]
-        predecessors = movie[6] if movie[6] else ""  # Convert None to empty string
+        predecessors = set()
+        predecessors.add(movie[6]) #add the predecessor
+        
+        for other in movies:
+            other_id = other[0]
+            if movie_id == other_id:
+                predecessors.add(other[6]) #trace the movies again for each movie and if there is a predecessor, add it
+                
+
+        separator = ', '
+        str_precedes = separator.join(str(pre) for pre in predecessors)
 
         # Append the movie with its attributes and predecessor list to the list
-        movies_with_predecessors.append((movie_id, movie_name, director_surname, platform, theatre_id, time_slot, predecessors))
-
-    return render_template('audience/listMovies.html', movies = movies)
+        movies_with_predecessors.append((movie_id, movie_name, director_surname, platform, theatre_id, time_slot, str_precedes))
+        movies_with_predecessors = list(dict.fromkeys(movies_with_predecessors)) #to remove the duplicates
+    return render_template('audience/listMovies.html', movies = movies_with_predecessors)
