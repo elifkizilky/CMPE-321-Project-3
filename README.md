@@ -52,6 +52,7 @@ class Config:
 ```
 cd App
 python create_db.py
+cd ..
 ```
 Ensure that your MySQL database server is up and running, it should write: ```Triggers are executed```.
 
@@ -59,7 +60,7 @@ Ensure that your MySQL database server is up and running, it should write: ```Tr
 
 * For MacOs/Linux:
 ```
-export FLASK_APP=/app.py
+export FLASK_APP=app.py
 ```
 * For windows:
 ```
