@@ -154,7 +154,7 @@ def add_movie_session():
                         WHERE movie_id=%s""", (movie_id,))
        
         result= cursor.fetchone()
-        print(result)
+        print("result",result)
         #if the movie does not exist
         if result is None:
             print("No rows found, this movie_id does not exists on the database")
@@ -164,7 +164,9 @@ def add_movie_session():
                 VALUES (%s, %s, %s, %s)
                 """, (movie_id, movie_name, username, duration))
             except Exception as e:
-                return str(e)
+                message=str(e)+"\n"
+                message += "\nPlease make sure that you are logged in!"
+                return render_template('director/director.html', message=message)
         else:
             #if the movie id exist, we need to check if the movie attributes match
             id= result[0]
