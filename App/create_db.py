@@ -5,7 +5,6 @@ import sys
 sys.path.append("..")
 from config import Config
 
-
 connection = mysql.connector.connect(
     host=Config.HOST,
     user=Config.USER,
@@ -13,7 +12,6 @@ connection = mysql.connector.connect(
     database=Config.DATABASE
 )
 cursor= connection.cursor()
-
 
 def execute_sql_file(file_path):
     with open(file_path, 'r') as sql_file:
@@ -25,61 +23,58 @@ def execute_sql_file(file_path):
 
     connection.commit()
     return "SQL file executed successfully"
-    
-    
-       
+     
 def execute_triggers():
- 
-    databasemanagerlimit_trigger= """CREATE TRIGGER CheckDatabaseManagerLimit
+    databasemanagercheck_trigger= """CREATE TRIGGER DatabaseManagerCheck
         BEFORE INSERT ON DatabaseManagers
         FOR EACH ROW
         BEGIN
-            DECLARE manager_count INT;
-            
-            SELECT COUNT(*) INTO manager_count
+            DECLARE count INT;
+            SELECT COUNT(*) 
+            INTO count
             FROM DatabaseManagers;
-            
-            IF manager_count >= 4 THEN
+            IF count >= 4 THEN
                 SIGNAL SQLSTATE '45000'
-                    SET MESSAGE_TEXT = 'Maximum limit of 4 database managers reached.';
+                SET MESSAGE_TEXT = 'Maximum limit of 4 database managers reached.';
             END IF;
         END;"""
-
-    cursor.execute(databasemanagerlimit_trigger)
+    cursor.execute(databasemanagercheck_trigger)
     #this trigger checks if a newly added movie session overlaps with an existing one, it also checks slot duration constraints
-    movie_session_overlap_trigger="""CREATE TRIGGER check_movie_session_overlap
-        BEFORE INSERT ON MovieSessions
-        FOR EACH ROW
+    movie_session_overlap_trigger="""CREATE TRIGGER movie_session_overlap
+        BEFORE INSERT 
+        ON MovieSessions FOR EACH ROW
         BEGIN
-            DECLARE new_start_time INT;
-            DECLARE new_end_time INT;
-            SET new_start_time = NEW.time_slot;
-            SET new_end_time = NEW.time_slot + (
+            DECLARE session_start INT;
+            DECLARE session_end INT;
+            SET session_start = NEW.time_slot;
+            SET session_end = NEW.time_slot + (
                 SELECT duration
                 FROM Movies
                 WHERE movie_id = NEW.movie_id
             );
-            IF new_end_time<=5 THEN
+            IF session_end<=5 THEN
                 IF EXISTS (
-                    SELECT 1 FROM MovieSessions
+                    SELECT * FROM MovieSessions
                     JOIN Movies ON MovieSessions.movie_id = Movies.movie_id
                     WHERE MovieSessions.theatre_id = NEW.theatre_id
                     AND MovieSessions.session_date = NEW.session_date
                     AND (
-                        (MovieSessions.time_slot >= new_start_time AND MovieSessions.time_slot < new_end_time)
-                        OR (MovieSessions.time_slot + Movies.duration > new_start_time AND MovieSessions.time_slot + Movies.duration <= new_end_time)
+                        (MovieSessions.time_slot < session_end AND MovieSessions.time_slot >= session_start)
+                        OR (MovieSessions.time_slot + Movies.duration <= session_end AND MovieSessions.time_slot + Movies.duration > session_start)
                     )
                 ) THEN
-                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Overlap in movie sessions';
+                    SIGNAL SQLSTATE '45000' 
+                    SET MESSAGE_TEXT = 'Overlap in movie sessions, please change the time slot';
                 END IF;
             ELSE
-                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You cant put a movie on this slot, we also need to go home and have some sleep!';
+                SIGNAL SQLSTATE '45000' 
+                SET MESSAGE_TEXT = 'You cant put a movie on this slot, we also need to go home and have some sleep!';
             END IF;
 
         END;"""
     cursor.execute(movie_session_overlap_trigger)
 
-    check_predecessor_trigger="""CREATE TRIGGER check_predecessor_movies
+    predecessor_trigger="""CREATE TRIGGER predecessor_movies_watched
         BEFORE INSERT ON AudienceBuy
         FOR EACH ROW
         BEGIN
@@ -96,9 +91,9 @@ def execute_triggers():
             IF predecessor_movies > 0 THEN
                 IF NOT EXISTS (
                     SELECT 1
-                    FROM AudienceBuy ab
-                    JOIN MovieSessions ms ON ab.session_id = ms.session_id
-                    JOIN Precedes p ON p.former_id = ms.movie_id
+                    FROM AudienceBuy as ab
+                    JOIN MovieSessions as ms ON ab.session_id = ms.session_id
+                    JOIN Precedes as p ON p.former_id = ms.movie_id
                     WHERE ab.username = NEW.username
                     AND p.later_id = (
                         SELECT movie_id
@@ -106,38 +101,38 @@ def execute_triggers():
                         WHERE session_id = NEW.session_id
                     )
                 ) THEN
-                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Predecessor movies need to be watched first';
+                    SIGNAL SQLSTATE '45000' 
+                    SET MESSAGE_TEXT = 'Watch the predecessors first';
                 END IF;
             END IF;
         END;"""
 
-    cursor.execute(check_predecessor_trigger)
-    rating_insert_trigger="""CREATE TRIGGER CheckRatingInsert
+    cursor.execute(predecessor_trigger)
+
+    rating_insert_trigger="""CREATE TRIGGER RatingInsert
         BEFORE INSERT ON Rates
         FOR EACH ROW
         BEGIN
             DECLARE subscribed INT;
             DECLARE bought_ticket INT;
-            
-            -- Check if the user is subscribed to the platform
             SELECT COUNT(*) INTO subscribed
             FROM AudienceSubscribe
             WHERE username = NEW.username
-            AND platform_id = (SELECT platform_id FROM Directors JOIN Movies ON Movies.username= Directors.username WHERE Movies.movie_id  = NEW.movie_id LIMIT 1);
+            AND platform_id = (SELECT platform_id FROM Directors JOIN Movies ON Movies.username= Directors.username WHERE Movies.movie_id  = NEW.movie_id);
             
-            -- Check if the user has bought a ticket to the movie
             SELECT COUNT(*) INTO bought_ticket
             FROM AudienceBuy
             WHERE username = NEW.username
             AND session_id = (SELECT session_id FROM MovieSessions WHERE movie_id = NEW.movie_id LIMIT 1);
-            -- If the user is not subscribed or hasn't bought a ticket, raise an error
+
             IF subscribed = 0 OR bought_ticket = 0
             THEN
                 SIGNAL SQLSTATE '45000'
-                    SET MESSAGE_TEXT = 'User is not eligible to rate this movie.';
+                SET MESSAGE_TEXT = 'User is not eligible to rate this movie.';
             END IF;
         END;"""
     cursor.execute(rating_insert_trigger)
+
     average_rating_trigger="""CREATE TRIGGER update_average_rating
         AFTER INSERT ON Rates
         FOR EACH ROW
@@ -152,33 +147,26 @@ def execute_triggers():
         END;""" 
     cursor.execute(average_rating_trigger)
     
-    capacity_trigger="""CREATE TRIGGER check_capacity_trigger
+    #updates the left capacity for a movie session
+    capacity_trigger="""CREATE TRIGGER capacity_trigger
         BEFORE INSERT ON AudienceBuy
         FOR EACH ROW
         BEGIN
-            DECLARE session_capacity INTEGER;
-            
-            -- Retrieve the capacity for the corresponding MovieSession
-            SELECT left_capacity INTO session_capacity
-            FROM MovieSessions
-            WHERE session_id = NEW.session_id;
-            
-            -- Check if the capacity is greater than 0
+            DECLARE session_capacity INT;
+            SET session_capacity =(SELECT left_capacity
+            FROM MovieSessions 
+            WHERE session_id = NEW.session_id);
             IF session_capacity > 0 THEN
-                -- Decrement the capacity by one
-                UPDATE MovieSessions
-                SET left_capacity = left_capacity - 1
+                UPDATE MovieSessions 
+                SET MovieSessions.left_capacity = MovieSessions.left_capacity - 1
                 WHERE session_id = NEW.session_id;
             ELSE
-                -- Raise an error if the capacity is not greater than 0
-                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Session is full. Cannot insert into AudienceBuy.';
-            END IF;
-
-        
+                SIGNAL SQLSTATE '45000' 
+                SET MESSAGE_TEXT = 'Session is full. Cannot insert into AudienceBuy.';
+            END IF;        
         END;"""
     cursor.execute(capacity_trigger)
     connection.commit()
-    
     return "Triggers are executed"
  
 
@@ -188,15 +176,28 @@ def execute_sql_line(line):
     cursor.execute(line)
     for x in cursor:
         print(x)
-    return "SQL file executed successfully"
+    return "SQL lines executed successfully"
 
 
 
 if __name__ == '__main__':
-    execute_sql_file("../CreateDatabase/dropTables.sql")
-    execute_sql_file("../CreateDatabase/create_db_notrigger.sql")
+    print("-"*40)
+    #initially drop tables 
+    print("Drop tables:")
+    print(execute_sql_file("../CreateDatabase/dropTables.sql"))
+    print("-"*40)
+    #then create tables
+    print("Create Tables:")
+    print(execute_sql_file("../CreateDatabase/create_db_notrigger.sql"))
+    print("-"*40)
+    #execute triggers
     print(execute_triggers())
-    execute_sql_file("../CreateDatabase/insert_for_demo.sql")
+    print("-"*40)
+    #execute the sql file for creating database managers, genre, rating platforms
+    print("Insert initial rows:")
+    print(execute_sql_file("../CreateDatabase/insert_for_demo.sql"))
+    print("-"*40)
+    #this sql file has additional inserts that can be helpful for demo
     execute_sql_file("../CreateDatabase/insert.sql")
 
   
