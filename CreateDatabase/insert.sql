@@ -1,4 +1,4 @@
-xINSERT INTO Users (username, name, password, surname)
+INSERT INTO Users (username, name, password, surname)
 VALUES ('demonslayer', 'tanjiro', '1234', 'kamado'),
 	('kingOfForest', 'Inosuke', '123478', 'Hashibira'),
         ('blonde', 'zenitsu', '123478', 'Agatsuma'),
