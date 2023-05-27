@@ -129,6 +129,8 @@ def add_movie_session():
     duration = request.form.get('duration')
     left_capacity=0
     username = session.get('username')
+    actual_movie_name=""
+    actual_duration=""
     print(username)
     try:
         cursor.execute("""SELECT theatre_capacity 
@@ -147,39 +149,42 @@ def add_movie_session():
         return render_template('director/director.html', message=message)
    
     try:
-        cursor.execute("""SELECT movie_name 
+        cursor.execute("""SELECT movie_id,movie_name, duration, username 
                         FROM Movies
                         WHERE movie_id=%s""", (movie_id,))
        
         result= cursor.fetchone()
         print(result)
+        #if the movie does not exist
         if result is None:
-            print("No rows found")
+            print("No rows found, this movie_id does not exists on the database")
+            try:
+                cursor.execute("""INSERT INTO Movies
+                (movie_id, movie_name, username, duration)
+                VALUES (%s, %s, %s, %s)
+                """, (movie_id, movie_name, username, duration))
+            except Exception as e:
+                return str(e)
         else:
-            actual_movie_name= result[0]
+            #if the movie id exist, we need to check if the movie attributes match
+            id= result[0]
+            actual_movie_name= result[1]
+            actual_duration= str(result[2])
+            actual_username= result[3] 
             print("this is the name of that movie",actual_movie_name)
-            if(actual_movie_name!= movie_name):
-                message = "There is a movie named: " + actual_movie_name +" already exists with this movie ID"
-                return render_template('director/director.html', message=message)
+            print("this is the actual duration",actual_duration)
+            if(actual_movie_name!= movie_name or actual_duration != duration or actual_username != username):
+                print("are you the problem")
+                message = "There is a movie named: " + actual_movie_name+ " with duration:" + actual_duration +" already exists on database, \nMovie ID: "+str(id) + ",\nDirector: " + actual_username 
+                return render_template('director/director.html', message=message)    
     except Exception as e: 
         message=str(e)
         return render_template('director/director.html', message=message)
-    
-    try:
-        cursor.execute("""INSERT IGNORE INTO Movies
-        (movie_id, movie_name, username, duration)
-        VALUES (%s, %s, %s, %s)
-        """, (movie_id, movie_name, username, duration))
-    except Exception as e:
-  
-        return str(e)
-    
     try:
         cursor.execute("""INSERT INTO MovieSessions 
         ( time_slot, session_date, movie_id, theatre_id, left_capacity)
         VALUES ( %s, %s, %s, %s, %s)
         """, ( time_slot, date, movie_id, theatre_id, left_capacity))
-    
         message = "Movie session successfully added."
     except Exception as e: 
         message=str(e)
