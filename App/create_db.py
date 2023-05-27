@@ -46,7 +46,7 @@ def execute_triggers():
         END;"""
 
     cursor.execute(databasemanagerlimit_trigger)
-
+    #this trigger checks if a newly added movie session overlaps with an existing one, it also checks slot duration constraints
     movie_session_overlap_trigger="""CREATE TRIGGER check_movie_session_overlap
         BEFORE INSERT ON MovieSessions
         FOR EACH ROW
@@ -59,19 +59,23 @@ def execute_triggers():
                 FROM Movies
                 WHERE movie_id = NEW.movie_id
             );
-            
-            IF EXISTS (
-                SELECT 1 FROM MovieSessions
-                JOIN Movies ON MovieSessions.movie_id = Movies.movie_id
-                WHERE MovieSessions.theatre_id = NEW.theatre_id
-                AND MovieSessions.session_date = NEW.session_date
-                AND (
-                    (MovieSessions.time_slot >= new_start_time AND MovieSessions.time_slot < new_end_time)
-                    OR (MovieSessions.time_slot + Movies.duration > new_start_time AND MovieSessions.time_slot + Movies.duration <= new_end_time)
-                )
-            ) THEN
-                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Overlap in movie sessions';
+            IF new_end_time<=5 THEN
+                IF EXISTS (
+                    SELECT 1 FROM MovieSessions
+                    JOIN Movies ON MovieSessions.movie_id = Movies.movie_id
+                    WHERE MovieSessions.theatre_id = NEW.theatre_id
+                    AND MovieSessions.session_date = NEW.session_date
+                    AND (
+                        (MovieSessions.time_slot >= new_start_time AND MovieSessions.time_slot < new_end_time)
+                        OR (MovieSessions.time_slot + Movies.duration > new_start_time AND MovieSessions.time_slot + Movies.duration <= new_end_time)
+                    )
+                ) THEN
+                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Overlap in movie sessions';
+                END IF;
+            ELSE
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You cant put a movie on this slot, we also need to go home and have some sleep!';
             END IF;
+
         END;"""
     cursor.execute(movie_session_overlap_trigger)
 
@@ -193,6 +197,8 @@ if __name__ == '__main__':
     execute_sql_file("../CreateDatabase/create_db_notrigger.sql")
     print(execute_triggers())
     execute_sql_file("../CreateDatabase/insert_for_demo.sql")
+    execute_sql_file("../CreateDatabase/insert.sql")
+
   
 
 
