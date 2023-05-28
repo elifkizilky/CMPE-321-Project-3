@@ -198,7 +198,7 @@ if __name__ == '__main__':
     print(execute_sql_file("../CreateDatabase/insert_for_demo.sql"))
     print("-"*40)
     #this sql file has additional inserts that can be helpful for demo
-    execute_sql_file("../CreateDatabase/insert.sql")
+    #execute_sql_file("../CreateDatabase/insert.sql")
 
   
 
