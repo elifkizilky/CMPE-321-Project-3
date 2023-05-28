@@ -54,13 +54,13 @@ def execute_triggers():
             );
             IF session_end<=5 THEN
                 IF EXISTS (
-                    SELECT * FROM MovieSessions
-                    JOIN Movies ON MovieSessions.movie_id = Movies.movie_id
-                    WHERE MovieSessions.theatre_id = NEW.theatre_id
-                    AND MovieSessions.session_date = NEW.session_date
+                    SELECT * FROM MovieSessions ms
+                    JOIN Movies m ON ms.movie_id = m.movie_id
+                    WHERE ms.theatre_id = NEW.theatre_id
+                    AND ms.session_date = NEW.session_date
                     AND (
-                        (MovieSessions.time_slot < session_end AND MovieSessions.time_slot >= session_start)
-                        OR (MovieSessions.time_slot + Movies.duration <= session_end AND MovieSessions.time_slot + Movies.duration > session_start)
+                        (ms.time_slot < session_end AND ms.time_slot >= session_start)
+                        OR (ms.time_slot + m.duration <= session_end AND ms.time_slot + m.duration > session_start)
                     )
                 ) THEN
                     SIGNAL SQLSTATE '45000' 
