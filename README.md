@@ -55,7 +55,8 @@ python create_db.py
 cd ..
 ```
 Ensure that your MySQL database server is up and running, you should see the following result:
-<img width="368" alt="image" src="https://github.com/elifkizilky/CMPE-321-Project-3/assets/53114791/e5fed3ae-6c39-45dd-9bc7-d9f94a34d572">
+<img width="387" alt="image" src="https://github.com/elifkizilky/CMPE-321-Project-3/assets/53114791/5b39f720-0f1b-47be-b609-d140f0100e6c">
+
 
 
 3. Set the Flask application environment variable:
