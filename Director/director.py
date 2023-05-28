@@ -14,7 +14,6 @@ def list_theatres():
     date = request.args.get('date')
     time_slot = request.args.get('time_slot')
     cursor = connection.cursor()
-
     try:
         cursor.execute("""SELECT theatre_name, Theatres.theatre_id, district, theatre_capacity 
                         FROM Theatres 
@@ -49,7 +48,6 @@ def list_movies():
                         WHERE Movies.username = %s """, (username,))
         movies = cursor.fetchall()
         print(movies)
-        
     except Exception as e:
         message=str(e)
         print(str(e))
@@ -59,7 +57,6 @@ def list_movies():
         last_element = movies[-1]
         range = last_element[0]
         print(range)
-        # Convert the predecessors list to a string
         movies_with_predecessors = []
         for movie in movies:
             movie_id = movie[0]
@@ -75,7 +72,6 @@ def list_movies():
                     predecessors.add(other[5]) #trace the movies again for each movie and if there is a predecessor, add it
             separator = ', '
             str_precedes = separator.join(str(pre) for pre in predecessors)
-
             # Append the movie with its attributes and predecessor list to the list
             movies_with_predecessors.append((movie_id, movie_name, theatre_id, date, time_slot, str_precedes))
             movies_with_predecessors = list(dict.fromkeys(movies_with_predecessors)) #to remove the duplicates
@@ -86,10 +82,8 @@ def list_movies():
 
 @director_bp.route('/tickets', methods=['GET'])
 def list_tickets():
-     # Replace with your database name
     tickets=[]
     cursor = connection.cursor()
-
     username = session.get('username')
     movie_id = request.args.get('movie_id')
     print(username, movie_id)
@@ -154,7 +148,7 @@ def add_movie_session():
                         WHERE movie_id=%s""", (movie_id,))
        
         result= cursor.fetchone()
-        print(result)
+        print("result",result)
         #if the movie does not exist
         if result is None:
             print("No rows found, this movie_id does not exists on the database")
@@ -164,7 +158,9 @@ def add_movie_session():
                 VALUES (%s, %s, %s, %s)
                 """, (movie_id, movie_name, username, duration))
             except Exception as e:
-                return str(e)
+                message=str(e)+"\n"
+                message += "\nPlease make sure that you are logged in!"
+                return render_template('director/director.html', message=message)
         else:
             #if the movie id exist, we need to check if the movie attributes match
             id= result[0]
@@ -198,9 +194,26 @@ def add_movie_session():
 @director_bp.route('/add_predecessor', methods=['POST'])
 def add_predecessor():
     # Retrieve the form data
+    # We assumed that movie id should belong to logged in director, but predecesor might belong to some other director
     cursor = connection.cursor()
     movie_id_pred = request.form.get('movie_id_pred')
     movie_id = request.form.get('movie_id')
+    username = session.get('username')
+    try:
+        cursor.execute("""SELECT username 
+                        FROM Movies WHERE movie_id=%s""", (movie_id,))
+        director= cursor.fetchone()
+        if director is None:
+            message="There are no movie with this id"
+            return render_template('director/director.html', message=message)
+        else:
+            if director[0]!= username:
+                message= "This is not your movie"
+                return render_template('director/director.html', message=message) 
+    except Exception as e:
+        message=str(e)
+        return render_template('director/director.html', message=message)
+    
     try:
         cursor.execute("""INSERT INTO Precedes
         (former_id, later_id)
@@ -208,8 +221,8 @@ def add_predecessor():
         """, (movie_id_pred, movie_id))
         message = "Predecessor is successfully added"
     except Exception as e: 
-        message=str(e)
-
+        message=str(e)+"\n"
+        message+= "Check if the movie id's exists"
     connection.commit()
     return render_template('director/director.html', message=message)
 
@@ -217,28 +230,34 @@ def add_predecessor():
 def update_name():
     # Retrieve the form data
     cursor = connection.cursor()
-  
     movie_id = request.form.get('movie_id')
     movie_name = request.form.get('movie_name')
     username = session.get('username')
 
-    cursor.execute("""SELECT username
-                    FROM Movies WHERE movie_id=%s""",(movie_id,))
-    director= cursor.fetchone()
-    print(director)
-    if director[0]!= username:
-        message= "This is not your movie"
-        return render_template('director/director.html', message=message)
-
     try:
-        cursor.execute("""UPDATE Movies
-            SET movie_name = %s
-            WHERE movie_id = %s AND username = %s;
-        """, (movie_name, movie_id, username))
-        message = "Movie name is changed"
+        cursor.execute("""SELECT username
+                    FROM Movies WHERE movie_id=%s""",(movie_id,))
     except Exception as e: 
         message=str(e)
-   
+        return render_template('director/director.html', message=message)
+
+    director= cursor.fetchone()
+    if director is None:
+        message="No movie exists with this movie id: "+ movie_id 
+    else:
+        print(director)
+        if director[0]!= username:
+            message= "This is not your movie"
+            return render_template('director/director.html', message=message)
+
+        try:
+            cursor.execute("""UPDATE Movies
+                SET movie_name = %s
+                WHERE movie_id = %s AND username = %s;
+            """, (movie_name, movie_id, username))
+            message = "Movie name is changed"
+        except Exception as e: 
+            message=str(e)
    
     connection.commit()
     return render_template('director/director.html', message=message)

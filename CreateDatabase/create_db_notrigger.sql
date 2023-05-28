@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS DatabaseManagers(
 	PRIMARY KEY (username));
 
 CREATE TABLE IF NOT EXISTS RatingPlatforms(
-platform_id INTEGER,
+platform_id INTEGER NOT NULL,
 platform_name CHAR(20) NOT NULL,
 PRIMARY KEY(platform_id),
 UNIQUE(platform_name)
@@ -32,7 +32,7 @@ FOREIGN KEY(username)
 );
 
 CREATE TABLE IF NOT EXISTS Movies (
-movie_id INTEGER, 
+movie_id INTEGER NOT NULL, 
 movie_name CHAR(100) NOT NULL, #movie name
 average_rating FLOAT, #overall_rating
 username CHAR(20) NOT NULL, #since director_name is  an attribute and not null, it is "direct" relation
@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS MovieGenres (
 
 
 CREATE TABLE IF NOT EXISTS Precedes( #comes from "precedes" relation in ER diagram
-former_id INTEGER,
-later_id INTEGER,
+former_id INTEGER NOT NULL,
+later_id INTEGER NOT NULL,
 PRIMARY KEY(former_id, later_id),
 Foreign key (former_id) REFERENCES Movies(movie_id)
 	ON DELETE CASCADE,
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS MovieSessions(
 	time_slot INTEGER NOT NULL,
     session_date DATE NOT NULL,
     movie_id INTEGER NOT NULL,
-    theatre_id INTEGER, #this is "on" relation in ER diagram
+    theatre_id INTEGER NOT NULL, #this is "on" relation in ER diagram
 	left_capacity INTEGER NOT NULL,
 	PRIMARY KEY (session_id),
     UNIQUE(theatre_id, session_date, time_slot),
