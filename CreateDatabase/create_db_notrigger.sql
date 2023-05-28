@@ -129,9 +129,11 @@ CREATE TABLE IF NOT EXISTS Rates (
 	movie_id INTEGER NOT NULL,  #the movie
 	rating FLOAT NOT NULL,
 	FOREIGN KEY(username) #audience can rate if they bought a ticket to the movie.
-		REFERENCES AudienceBuy(username),
+		REFERENCES AudienceBuy(username)
+		ON DELETE CASCADE,
 	FOREIGN KEY(movie_id)	#platform of the movie
-		REFERENCES Movies(movie_id),
+		REFERENCES Movies(movie_id)
+		ON DELETE CASCADE,
 	PRIMARY KEY (username,movie_id),
     CHECK (rating >= 0 AND rating <= 5) );
     

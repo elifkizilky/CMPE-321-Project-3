@@ -23,7 +23,10 @@ def addUser():
             if user_type == "director":
                 nationality = request.form['nationality']
                 platform_id = request.form['platform_id']
-                
+              
+                if platform_id=="":
+                    platform_id=None
+
                 # Insert into Users table
                 query_user = "INSERT INTO Users (username, password, name, surname) VALUES (%s, %s, %s, %s)"
                 values_user = (username, password, name, surname)
@@ -58,7 +61,7 @@ def deleteAudience():
     cursor = connection.cursor()
 
     # Check if the audience exists and delete if found
-    query = "SELECT * FROM Users WHERE username = %s"
+    query = "SELECT * FROM Users WHERE username = %s AND username NOT IN (SELECT d.username FROM Directors as d)"
     cursor.execute(query, (username,))
     audience = cursor.fetchone()
     error_message = None
