@@ -54,7 +54,9 @@ cd App
 python create_db.py
 cd ..
 ```
-Ensure that your MySQL database server is up and running, it should write: ```Triggers are executed```.
+Ensure that your MySQL database server is up and running, you should see the following result:
+<img width="368" alt="image" src="https://github.com/elifkizilky/CMPE-321-Project-3/assets/53114791/e5fed3ae-6c39-45dd-9bc7-d9f94a34d572">
+
 
 3. Set the Flask application environment variable:
 

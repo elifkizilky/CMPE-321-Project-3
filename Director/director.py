@@ -122,9 +122,19 @@ def add_movie_session():
     date = request.form.get('date')
     duration = request.form.get('duration')
     left_capacity=0
+    genre_list = request.form.getlist('genre')
+    print(genre_list)
+    genre_ids=[]
+    for genre in genre_list:
+        cursor.execute("""SELECT genre_id FROM Genres 
+                    WHERE genre_name=%s
+        """,(genre,))
+        genre_id= cursor.fetchone()[0]
+        genre_ids.append(genre_id)
     username = session.get('username')
     actual_movie_name=""
     actual_duration=""
+    
     print(username)
     try:
         cursor.execute("""SELECT theatre_capacity 
@@ -157,6 +167,22 @@ def add_movie_session():
                 (movie_id, movie_name, username, duration)
                 VALUES (%s, %s, %s, %s)
                 """, (movie_id, movie_name, username, duration))
+                #if movie is newly being added, movie genres also should be added:
+                if not genre_list:
+                    message = "Please select at least one genre."
+                    return render_template('director/director.html', message=message)
+                
+                for genre in genre_list:
+                    cursor.execute("""SELECT genre_id FROM Genres 
+                                WHERE genre_name=%s
+                    """,(genre,))
+                    genre_id= cursor.fetchone()[0]
+                    genre_ids.append(genre_id)
+                    print(genre_id)
+                    cursor.execute("""INSERT INTO MovieGenres
+                    (movie_id, genre_id)
+                    VALUES (%s, %s)
+                    """, (movie_id, genre_id))
             except Exception as e:
                 message=str(e)+"\n"
                 message += "\nPlease make sure that you are logged in!"
@@ -169,9 +195,21 @@ def add_movie_session():
             actual_username= result[3] 
             print("this is the name of that movie",actual_movie_name)
             print("this is the actual duration",actual_duration)
-            if(actual_movie_name!= movie_name or actual_duration != duration or actual_username != username):
+
+            cursor.execute("""SELECT genre_id FROM MovieGenres 
+                                WHERE movie_id=%s
+                    """,(movie_id,))
+            data= cursor.fetchall()
+            actual_genre_ids = [item[0] for item in data]
+           
+            print(actual_genre_ids)
+            print(genre_ids)
+           
+    
+            if(actual_movie_name!= movie_name or actual_duration != duration or actual_username != username or actual_genre_ids!=genre_ids):
                 print("are you the problem")
-                message = "There is a movie named: " + actual_movie_name+ " with duration:" + actual_duration +" already exists on database, \nMovie ID: "+str(id) + ",\nDirector: " + actual_username 
+
+                message = "There is a movie named: " + actual_movie_name+ " with duration:" + actual_duration +" already exists on database, \nMovie ID: "+str(id) + ",\nDirector: " + actual_username + " Genres: " + str(actual_genre_ids)
                 return render_template('director/director.html', message=message)    
     except Exception as e: 
         message=str(e)
@@ -186,7 +224,7 @@ def add_movie_session():
         message=str(e)
 
     cursor.execute("""SELECT *
-                    FROM Movies""")
+                    FROM MovieSessions""")
     print("bre susak",cursor.fetchall())
     connection.commit()
     return render_template('director/director.html', message=message)

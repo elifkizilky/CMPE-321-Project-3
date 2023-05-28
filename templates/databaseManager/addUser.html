@@ -72,6 +72,9 @@
         </div>
 
         <button type="submit">Add User</button>
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
     </form>
 
     <script>
