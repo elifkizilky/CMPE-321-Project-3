@@ -10,6 +10,7 @@ def databaseManager():
 
 @databaseManager_bp.route('/addUser', methods=['POST', 'GET'])
 def addUser():
+    message = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -18,34 +19,37 @@ def addUser():
         user_type = request.form['user_type']  # "audience" or "director"
         cursor = connection.cursor()
         
-        if user_type == "director":
-            nationality = request.form['nationality']
-            platform_id = request.form['platform_id']
+        try:
+            if user_type == "director":
+                nationality = request.form['nationality']
+                platform_id = request.form['platform_id']
+                
+                # Insert into Users table
+                query_user = "INSERT INTO Users (username, password, name, surname) VALUES (%s, %s, %s, %s)"
+                values_user = (username, password, name, surname)
+                cursor.execute(query_user, values_user)
+                
+                # Insert into Directors table
+                query_director = "INSERT INTO Directors (username, nationality, platform_id) VALUES (%s, %s, %s)"
+                values_director = (username, nationality, platform_id)
+                cursor.execute(query_director, values_director)
+            else:
+                # Insert into Users table
+                query_user = "INSERT INTO Users (username, password, name, surname) VALUES (%s, %s, %s, %s)"
+                values_user = (username, password, name, surname)
+                cursor.execute(query_user, values_user)
             
-            # Insert into Users table
-            query_user = "INSERT INTO Users (username, password, name, surname) VALUES (%s, %s, %s, %s)"
-            values_user = (username, password, name, surname)
-            cursor.execute(query_user, values_user)
             
-            # Insert into Directors table
-            query_director = "INSERT INTO Directors (username, nationality, platform_id) VALUES (%s, %s, %s)"
-            values_director = (username, nationality, platform_id)
-            cursor.execute(query_director, values_director)
-        else:
-            # Insert into Users table
-            query_user = "INSERT INTO Users (username, password, name, surname) VALUES (%s, %s, %s, %s)"
-            values_user = (username, password, name, surname)
-            cursor.execute(query_user, values_user)
-        
+            
+            # Display success message or redirect to relevant page
+            if user_type == "audience":
+                message = "Audience is added successfully"
+            else:
+                message = "Director is added successfully"
+        except Exception as e:
+            message=str(e)
         connection.commit()
-        
-        # Display success message or redirect to relevant page
-        if user_type == "audience":
-            return "User added successfully"
-        else:
-            return "Director added successfully"
-    
-    return render_template('databaseManager/addUser.html')
+    return render_template('databaseManager/addUser.html', message=message)
 
 
 @databaseManager_bp.route('/deleteAudience', methods=['POST'])
@@ -77,23 +81,26 @@ def updateDirectorPlatform():
     username = request.form['username']
     platform_id = request.form['platform_id']
     cursor = connection.cursor()
-
-    # Check if the director exists
-    query = "SELECT * FROM Directors WHERE username = %s"
-    cursor.execute(query, (username,))
-    director = cursor.fetchone()
     error_message2 = None
     success_message2 = None
+    # Check if the director exists
+    try:
+        query = "SELECT * FROM Directors WHERE username = %s"
+        cursor.execute(query, (username,))
+        director = cursor.fetchone()
 
-    if director:
-        # Update the platform ID
-        query_update = "UPDATE Directors SET platform_id = %s WHERE username = %s"
-        cursor.execute(query_update, (platform_id, username))
-        connection.commit()
-        success_message2 = "Platform ID updated successfully"
-    else:
-        error_message2 = "Director not found"
 
+        if director:
+            # Update the platform ID
+            query_update = "UPDATE Directors SET platform_id = %s WHERE username = %s"
+            cursor.execute(query_update, (platform_id, username))
+            success_message2 = "Platform ID updated successfully"
+        else:
+            error_message2 = "Director not found"
+    except Exception as e:
+        error_message2 = str(e)
+        
+    connection.commit()
     return render_template('databaseManager/databaseManager.html', success_message2=success_message2, error_message2=error_message2)
 
 @databaseManager_bp.route('/viewDirectors')
@@ -140,7 +147,7 @@ def viewAudienceRatings():
         cursor.execute(query, (username,))
         ratings = cursor.fetchall()
         if not ratings:
-            message = "This Audience does not have rating"
+            message = "This Audience does not have rating or audience does not exist"
             return render_template('databaseManager/viewAudienceRatings.html', message=message)
         return render_template('databaseManager/viewAudienceRatings.html', ratings=ratings)
 
