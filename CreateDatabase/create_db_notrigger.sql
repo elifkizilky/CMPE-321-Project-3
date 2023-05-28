@@ -1,24 +1,24 @@
 CREATE TABLE IF NOT EXISTS DatabaseManagers(
-	username CHAR(20) NOT NULL,
-	password char(20) NOT NULL,
+	username CHAR(30) NOT NULL,
+	password char(30) NOT NULL,
 	PRIMARY KEY (username));
 
 CREATE TABLE IF NOT EXISTS RatingPlatforms(
 platform_id INTEGER NOT NULL,
-platform_name CHAR(20) NOT NULL,
+platform_name CHAR(30) NOT NULL,
 PRIMARY KEY(platform_id),
 UNIQUE(platform_name)
 );  
     
 CREATE TABLE IF NOT EXISTS Users (
-	username CHAR(20) NOT NULL, #As design choice we decided these should not be null
-	name CHAR(20) NOT NULL, 
-	password CHAR(10) NOT NULL, 
-	surname CHAR(20)NOT NULL,
+	username CHAR(30) NOT NULL, #As design choice we decided these should not be null
+	name CHAR(30) NOT NULL, 
+	password CHAR(30) NOT NULL, 
+	surname CHAR(30)NOT NULL,
 PRIMARY KEY (username)); 
 
 CREATE TABLE IF NOT EXISTS Directors (
-username CHAR(20) NOT NULL,
+username CHAR(30) NOT NULL,
 nationality CHAR(100) NOT NULL,
 platform_id INTEGER,   #it shows agreement relation, at most one platform constraint
 PRIMARY KEY (username),
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Movies (
 movie_id INTEGER NOT NULL, 
 movie_name CHAR(100) NOT NULL, #movie name
 average_rating FLOAT, #overall_rating
-username CHAR(20) NOT NULL, #since director_name is  an attribute and not null, it is "direct" relation
+username CHAR(30) NOT NULL, #since director_name is  an attribute and not null, it is "direct" relation
 duration INTEGER NOT NULL,
 UNIQUE(movie_id, duration), # since movie_id primary key, it is referenced in "MovieSessions" table this way
 FOREIGN KEY(username)	
@@ -48,8 +48,8 @@ PRIMARY KEY (movie_id));
 CREATE TABLE IF NOT EXISTS Theatres (
 	theatre_id INTEGER NOT NULL, 
 	theatre_capacity INTEGER NOT NULL, 
-	theatre_name CHAR(20) NOT NULL, 
-	district CHAR(20) NOT NULL, 
+	theatre_name CHAR(30) NOT NULL, 
+	district CHAR(30) NOT NULL, 
 	PRIMARY KEY (theatre_id));
     
 CREATE TABLE IF NOT EXISTS Genres (
@@ -95,14 +95,14 @@ CREATE TABLE IF NOT EXISTS MovieSessions(
         ON DELETE CASCADE,
 	FOREIGN KEY(theatre_id)
 		REFERENCES Theatres(theatre_id),
-	CHECK( time_slot <= 4)); #client should delete the movie sessions before deleting the theare 
+	CHECK( time_slot <= 4))AUTO_INCREMENT = 50001; #client should delete the movie sessions before deleting the theare 
 
 
 
 #AudienceBuy corresponds to "buy" relation and "Audience" entity in ER diagram.
 #it represents bought ticket list.
 CREATE TABLE IF NOT EXISTS AudienceBuy (
-	username CHAR(20) NOT NULL, 
+	username CHAR(30) NOT NULL, 
 	session_id INTEGER NOT NULL,
 	PRIMARY KEY (username, session_id),
 	FOREIGN KEY(username) #it comes from "Audience" entity in ER diagram.
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS AudienceBuy (
  
 #AudienceSubscribe corresponds to "Audience" entity and "subscribe" relation in ER diagram.
 CREATE TABLE IF NOT EXISTS AudienceSubscribe (
-	username CHAR(20) NOT NULL, 
+	username CHAR(30) NOT NULL, 
 	platform_id INTEGER NOT NULL,
 	PRIMARY KEY (username, platform_id),
 	FOREIGN KEY(username) #it comes from Audience entity in ER diagram
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS AudienceSubscribe (
 
 #Rates corresponds to "rates" relation in ER diagram.
 CREATE TABLE IF NOT EXISTS Rates (
-	username CHAR(20) NOT NULL,  #the audience who rates
+	username CHAR(30) NOT NULL,  #the audience who rates
 	movie_id INTEGER NOT NULL,  #the movie
 	rating FLOAT NOT NULL,
 	FOREIGN KEY(username) #audience can rate if they bought a ticket to the movie.

@@ -195,10 +195,15 @@ if __name__ == '__main__':
     print("-"*40)
     #execute the sql file for creating database managers, genre, rating platforms
     print("Insert initial rows:")
-    print(execute_sql_file("../CreateDatabase/insert_for_demo.sql"))
+    print(execute_sql_file("../CreateDatabase/insert_before_demo.sql"))
     print("-"*40)
+
+    #execute the sql file for creating database managers, genre, rating platforms
+    # print("Insert initial rows:")
+    # print(execute_sql_file("../CreateDatabase/insert_for_demo.sql"))
+    # print("-"*40)
     #this sql file has additional inserts that can be helpful for demo
-    execute_sql_file("../CreateDatabase/insert.sql")
+    #execute_sql_file("../CreateDatabase/insert.sql")
 
   
 
